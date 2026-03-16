@@ -1,0 +1,1071 @@
+<!DOCTYPE html>
+<!-- saved from url=(0051)file:///C:/Users/rytir/Downloads/investice_app.html -->
+<html lang="cs"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Investice — Evidence pozemků</title>
+<link href="./index_files/css2" rel="stylesheet">
+<style>
+:root {
+  --bg: #0d0d0d;
+  --bg2: #141414;
+  --bg3: #1c1c1c;
+  --bg4: #242424;
+  --border: rgba(255,255,255,0.07);
+  --border2: rgba(255,255,255,0.12);
+  --text: #e8e6df;
+  --text2: #9a9890;
+  --text3: #5a5856;
+  --accent: #d4f06e;
+  --accent2: #a8c84a;
+  --red: #ff6b6b;
+  --blue: #6bb5ff;
+  --amber: #ffc366;
+  --teal: #5dd6b0;
+  --mono: 'IBM Plex Mono', monospace;
+  --sans: 'IBM Plex Sans', sans-serif;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; background: var(--bg); color: var(--text); font-family: var(--mono); font-size: 13px; overflow: hidden; }
+
+/* Layout */
+.app { display: grid; grid-template-rows: 48px 1fr; grid-template-columns: 220px 1fr; height: 100vh; }
+.topbar { grid-column: 1/-1; background: var(--bg2); border-bottom: 1px solid var(--border); display: flex; align-items: center; padding: 0 16px; gap: 0; z-index: 10; }
+.sidebar { background: var(--bg2); border-right: 1px solid var(--border); overflow-y: auto; display: flex; flex-direction: column; }
+.main { overflow: hidden; display: flex; flex-direction: column; }
+
+/* Topbar */
+.logo { font-family: var(--sans); font-weight: 600; font-size: 14px; color: var(--accent); letter-spacing: .05em; margin-right: 28px; white-space: nowrap; }
+.logo em { color: var(--text3); font-style: normal; font-weight: 300; }
+.nav { display: flex; height: 100%; }
+.nav-btn { height: 100%; padding: 0 14px; font-family: var(--mono); font-size: 12px; color: var(--text3); background: none; border: none; border-bottom: 2px solid transparent; cursor: pointer; transition: all .15s; white-space: nowrap; }
+.nav-btn:hover { color: var(--text); }
+.nav-btn.active { color: var(--accent); border-bottom-color: var(--accent); }
+.topbar-right { margin-left: auto; display: flex; align-items: center; gap: 8px; }
+.badge { background: var(--bg4); border: 1px solid var(--border2); border-radius: 4px; padding: 3px 8px; font-size: 11px; color: var(--text3); }
+.badge.warn { background: rgba(255,195,102,.08); border-color: rgba(255,195,102,.2); color: var(--amber); }
+.btn { background: var(--accent); color: #0d0d0d; border: none; border-radius: 6px; padding: 5px 12px; font-family: var(--mono); font-size: 12px; font-weight: 500; cursor: pointer; transition: background .15s; white-space: nowrap; }
+.btn:hover { background: var(--accent2); }
+.btn-ghost { background: transparent; color: var(--text2); border: 1px solid var(--border2); border-radius: 6px; padding: 5px 12px; font-family: var(--mono); font-size: 12px; cursor: pointer; transition: all .15s; white-space: nowrap; }
+.btn-ghost:hover { color: var(--text); border-color: var(--text3); }
+
+/* Sidebar */
+.sidebar-section { font-size: 10px; color: var(--text3); text-transform: uppercase; letter-spacing: .08em; padding: 10px 14px 4px; margin-top: 4px; }
+.sidebar-item { display: flex; align-items: center; gap: 8px; padding: 7px 14px; font-size: 12px; color: var(--text2); cursor: pointer; user-select: none; transition: all .1s; }
+.sidebar-item:hover { color: var(--text); background: var(--bg3); }
+.sidebar-item.active { color: var(--accent); background: rgba(212,240,110,.05); }
+.sidebar-dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
+.sidebar-count { margin-left: auto; font-size: 10px; color: var(--text3); background: var(--bg4); padding: 1px 5px; border-radius: 3px; }
+.sidebar-count.warn { background: rgba(255,195,102,.1); color: var(--amber); }
+
+/* Pages */
+.page { display: none; flex-direction: column; flex: 1; overflow: hidden; }
+.page.active { display: flex; }
+
+/* Page header */
+.page-header { padding: 16px 20px 0; border-bottom: 1px solid var(--border); background: var(--bg); flex-shrink: 0; }
+.page-title { font-family: var(--sans); font-size: 18px; font-weight: 600; margin-bottom: 12px; display: flex; align-items: baseline; gap: 10px; }
+.page-title-sub { font-size: 12px; color: var(--text3); font-weight: 300; }
+.page-tabs { display: flex; }
+.page-tab { padding: 8px 14px; font-size: 12px; color: var(--text3); cursor: pointer; border-bottom: 2px solid transparent; transition: all .12s; user-select: none; }
+.page-tab:hover { color: var(--text); }
+.page-tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+
+/* Scroll content */
+.scroll { flex: 1; overflow-y: auto; padding: 16px 20px; }
+
+/* KPI */
+.kpi-row { display: grid; grid-template-columns: repeat(4,1fr); gap: 12px; margin-bottom: 16px; }
+.kpi { background: var(--bg2); border: 1px solid var(--border); border-radius: 10px; padding: 14px; position: relative; overflow: hidden; }
+.kpi::before { content:''; position: absolute; top:0; left:0; right:0; height: 2px; }
+.kpi.g::before { background: var(--accent); }
+.kpi.b::before { background: var(--blue); }
+.kpi.a::before { background: var(--amber); }
+.kpi.r::before { background: var(--red); }
+.kpi-label { font-size: 10px; color: var(--text3); text-transform: uppercase; letter-spacing: .06em; margin-bottom: 6px; }
+.kpi-val { font-family: var(--sans); font-size: 22px; font-weight: 600; color: var(--text); line-height: 1; }
+.kpi-sub { font-size: 11px; color: var(--text2); margin-top: 5px; }
+.up { color: var(--accent); }
+.down { color: var(--red); }
+
+/* 2-col grid */
+.two-col { display: grid; grid-template-columns: 1.3fr 1fr; gap: 12px; margin-bottom: 12px; }
+
+/* Panel */
+.panel { background: var(--bg2); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; }
+.panel-head { padding: 10px 14px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
+.panel-title { font-size: 10px; color: var(--text3); text-transform: uppercase; letter-spacing: .06em; }
+.panel-body { padding: 14px; }
+
+/* Tables */
+.tbl { width: 100%; border-collapse: collapse; font-size: 12px; }
+.tbl th { color: var(--text3); font-size: 10px; text-transform: uppercase; letter-spacing: .05em; padding: 0 10px 8px; text-align: left; font-weight: 400; white-space: nowrap; }
+.tbl td { padding: 9px 10px; border-top: 1px solid var(--border); color: var(--text2); white-space: nowrap; }
+.tbl tr { cursor: pointer; transition: background .1s; }
+.tbl tr:hover td { background: var(--bg3); color: var(--text); }
+
+.tbl-full { width: 100%; border-collapse: collapse; font-size: 12px; }
+.tbl-full th { position: sticky; top: 0; background: var(--bg2); color: var(--text3); font-size: 10px; text-transform: uppercase; letter-spacing: .05em; padding: 10px 12px; text-align: left; font-weight: 400; border-bottom: 1px solid var(--border); white-space: nowrap; z-index: 1; }
+.tbl-full td { padding: 9px 12px; border-bottom: 1px solid var(--border); color: var(--text2); }
+.tbl-full tr:hover td { background: var(--bg3); }
+.tbl-wrap { flex: 1; overflow: auto; }
+
+/* Pills */
+.pill { display: inline-flex; align-items: center; padding: 2px 7px; border-radius: 4px; font-size: 10px; font-weight: 500; }
+.pill-g { background: rgba(212,240,110,.1); color: var(--accent); }
+.pill-b { background: rgba(107,181,255,.1); color: var(--blue); }
+.pill-a { background: rgba(255,195,102,.1); color: var(--amber); }
+.pill-r { background: rgba(255,107,107,.1); color: var(--red); }
+.pill-gray { background: var(--bg4); color: var(--text2); }
+
+/* Cat tags */
+.cat { display: inline-block; padding: 2px 7px; border-radius: 4px; font-size: 10px; }
+.cat-kupni { background: rgba(107,181,255,.1); color: var(--blue); }
+.cat-prodejni { background: rgba(93,214,176,.1); color: var(--teal); }
+.cat-naklady { background: rgba(255,195,102,.1); color: var(--amber); }
+.cat-invest { background: rgba(212,240,110,.1); color: var(--accent); }
+.cat-none { background: var(--bg4); color: var(--text3); }
+
+/* Toolbar */
+.toolbar { padding: 12px 20px; display: flex; align-items: center; gap: 8px; border-bottom: 1px solid var(--border); flex-shrink: 0; }
+.search { background: var(--bg3); border: 1px solid var(--border2); border-radius: 6px; padding: 6px 10px; color: var(--text); font-family: var(--mono); font-size: 12px; width: 200px; outline: none; }
+.search:focus { border-color: var(--accent); }
+.sel { background: var(--bg3); border: 1px solid var(--border2); border-radius: 6px; padding: 6px 10px; color: var(--text2); font-family: var(--mono); font-size: 12px; outline: none; cursor: pointer; }
+.spacer { flex: 1; }
+
+/* Banner */
+.banner { margin: 12px 20px 0; background: rgba(255,195,102,.06); border: 1px solid rgba(255,195,102,.18); border-radius: 7px; padding: 9px 14px; display: flex; align-items: center; gap: 10px; font-size: 12px; color: var(--amber); flex-shrink: 0; }
+
+/* Detail panel */
+.detail-panel { width: 280px; background: var(--bg2); border-left: 1px solid var(--border); flex-shrink: 0; display: flex; flex-direction: column; overflow-y: auto; }
+.detail-head { padding: 14px 16px; border-bottom: 1px solid var(--border); font-family: var(--sans); font-size: 13px; font-weight: 600; }
+.detail-section { padding: 12px 16px; border-bottom: 1px solid var(--border); }
+.detail-label { font-size: 10px; color: var(--text3); text-transform: uppercase; letter-spacing: .06em; margin-bottom: 8px; }
+.detail-row { display: flex; justify-content: space-between; margin-bottom: 5px; font-size: 12px; }
+.detail-row .k { color: var(--text2); }
+.detail-row .v { color: var(--text); }
+.detail-row .v.pos { color: var(--accent); }
+.detail-row .v.neg { color: var(--red); }
+.classify-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-top: 8px; }
+.classify-btn { background: var(--bg3); border: 1px solid var(--border2); border-radius: 6px; padding: 7px 6px; color: var(--text2); font-family: var(--mono); font-size: 11px; cursor: pointer; text-align: center; transition: all .12s; user-select: none; }
+.classify-btn:hover { border-color: var(--accent); color: var(--accent); }
+.classify-btn.selected { background: rgba(212,240,110,.08); border-color: var(--accent); color: var(--accent); }
+
+/* KU search */
+.ku-search-wrap { position: relative; }
+.ku-dropdown { position: absolute; top: 100%; left: 0; right: 0; background: var(--bg3); border: 1px solid var(--border2); border-radius: 6px; z-index: 100; max-height: 240px; overflow-y: auto; margin-top: 4px; display: none; }
+.ku-dropdown.open { display: block; }
+.ku-option { padding: 8px 12px; cursor: pointer; font-size: 12px; border-bottom: 1px solid var(--border); }
+.ku-option:hover { background: var(--bg4); color: var(--accent); }
+.ku-option:last-child { border-bottom: none; }
+
+/* KU result card */
+.ku-result { background: var(--bg2); border: 1px solid var(--border); border-radius: 10px; padding: 16px; margin-bottom: 12px; }
+.ku-result-name { font-family: var(--sans); font-size: 16px; font-weight: 600; margin-bottom: 4px; }
+.ku-result-meta { font-size: 12px; color: var(--text3); margin-bottom: 14px; }
+.ku-stats-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 10px; margin-bottom: 14px; }
+.ku-stat { background: var(--bg3); border-radius: 8px; padding: 10px 12px; }
+.ku-stat-label { font-size: 10px; color: var(--text3); text-transform: uppercase; letter-spacing: .04em; margin-bottom: 4px; }
+.ku-stat-val { font-family: var(--sans); font-size: 18px; font-weight: 600; }
+.ku-hist { display: flex; align-items: flex-end; gap: 4px; height: 60px; }
+.ku-bar-wrap { display: flex; flex-direction: column; align-items: center; gap: 3px; flex: 1; }
+.ku-bar { background: var(--accent); border-radius: 2px 2px 0 0; width: 100%; min-height: 2px; opacity: .7; transition: opacity .15s; }
+.ku-bar:hover { opacity: 1; }
+.ku-bar-label { font-size: 9px; color: var(--text3); }
+
+/* P&L */
+.pl-row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid var(--border); font-size: 12px; }
+.pl-row:last-child { border-bottom: none; }
+.pl-row.total { font-family: var(--sans); font-size: 14px; font-weight: 600; padding-top: 12px; border-top: 1px solid var(--border2); }
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 4px; height: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 2px; }
+
+/* Cashflow chart */
+.cf-chart { width: 100%; height: 100px; display: block; }
+
+/* Google Sheets connect panel */
+.connect-panel { background: var(--bg2); border: 1px solid var(--border); border-radius: 10px; padding: 20px; margin-bottom: 16px; }
+.connect-status { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; }
+.status-dot { width: 8px; height: 8px; border-radius: 50%; }
+.status-dot.connected { background: var(--accent); box-shadow: 0 0 6px var(--accent); }
+.status-dot.disconnected { background: var(--text3); }
+.sheets-input { background: var(--bg3); border: 1px solid var(--border2); border-radius: 6px; padding: 8px 12px; color: var(--text); font-family: var(--mono); font-size: 12px; width: 100%; outline: none; margin-bottom: 8px; }
+.sheets-input:focus { border-color: var(--accent); }
+
+/* Animations */
+@keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
+.page.active { animation: fadeIn .15s ease; }
+</style>
+</head>
+<body>
+<div class="app">
+
+  <!-- TOPBAR -->
+  <header class="topbar">
+    <div class="logo">PZM<em>sys</em></div>
+    <nav class="nav">
+      <button class="nav-btn active" onclick="showPage(&#39;dashboard&#39;,this)">Dashboard</button>
+      <button class="nav-btn" onclick="showPage(&#39;obchody&#39;,this)">Obchody</button>
+      <button class="nav-btn" onclick="showPage(&#39;platby&#39;,this)">Platby</button>
+      <button class="nav-btn" onclick="showPage(&#39;analytika&#39;,this)">Analytika</button>
+      <button class="nav-btn" onclick="showPage(&#39;kuceny&#39;,this)">Ceny k.ú.</button>
+      <button class="nav-btn" onclick="showPage(&#39;nastaveni&#39;,this)">Nastavení</button>
+    </nav>
+    <div class="topbar-right">
+      <div class="badge warn" id="warn-badge">⚠ 18 neklasif.</div>
+      <div class="badge" id="sheets-badge">Sheets: nepřipojeno</div>
+      <button class="btn-ghost">↓ Export</button>
+      <button class="btn" onclick="showPage(&#39;nastaveni&#39;, document.querySelectorAll(&#39;.nav-btn&#39;)[5])">+ Nový obchod</button>
+    </div>
+  </header>
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sidebar-section">Stav obchodů</div>
+    <div class="sidebar-item active" onclick="filterSidebar(this)">
+      <span class="sidebar-dot" style="background:var(--text2)"></span> Všechny
+      <span class="sidebar-count">127</span>
+    </div>
+    <div class="sidebar-item" onclick="filterSidebar(this)">
+      <span class="sidebar-dot" style="background:var(--blue)"></span> Schváleno
+      <span class="sidebar-count">24</span>
+    </div>
+    <div class="sidebar-item" onclick="filterSidebar(this)">
+      <span class="sidebar-dot" style="background:var(--teal)"></span> Koupeno
+      <span class="sidebar-count">34</span>
+    </div>
+    <div class="sidebar-item" onclick="filterSidebar(this)">
+      <span class="sidebar-dot" style="background:var(--accent)"></span> Prodáno
+      <span class="sidebar-count">57</span>
+    </div>
+    <div class="sidebar-item" onclick="filterSidebar(this)">
+      <span class="sidebar-dot" style="background:var(--amber)"></span> Ztraceno
+      <span class="sidebar-count">12</span>
+    </div>
+
+    <div class="sidebar-section">Kraj</div>
+    <div class="sidebar-item" onclick="filterSidebar(this)">
+      <span class="sidebar-dot" style="background:var(--text3)"></span> Jihomoravský
+      <span class="sidebar-count">38</span>
+    </div>
+    <div class="sidebar-item" onclick="filterSidebar(this)">
+      <span class="sidebar-dot" style="background:var(--text3)"></span> Olomoucký
+      <span class="sidebar-count">29</span>
+    </div>
+    <div class="sidebar-item" onclick="filterSidebar(this)">
+      <span class="sidebar-dot" style="background:var(--text3)"></span> Jihočeský
+      <span class="sidebar-count">24</span>
+    </div>
+    <div class="sidebar-item" onclick="filterSidebar(this)">
+      <span class="sidebar-dot" style="background:var(--text3)"></span> Ostatní
+      <span class="sidebar-count">36</span>
+    </div>
+
+    <div class="sidebar-section">Rychlé filtry</div>
+    <div class="sidebar-item" onclick="showPage(&#39;platby&#39;, document.querySelectorAll(&#39;.nav-btn&#39;)[2])">
+      <span class="sidebar-dot" style="background:var(--amber)"></span> Neklasifikované
+      <span class="sidebar-count warn">18</span>
+    </div>
+    <div class="sidebar-item">
+      <span class="sidebar-dot" style="background:var(--red)"></span> Prodej za méně
+      <span class="sidebar-count warn">3</span>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="main">
+
+    <!-- ===== DASHBOARD ===== -->
+    <div class="page active" id="page-dashboard">
+      <div class="page-header">
+        <div class="page-title">Dashboard <span class="page-title-sub">— celkový přehled portfolia</span></div>
+        <div class="page-tabs">
+          <div class="page-tab active">Přehled</div>
+          <div class="page-tab">Cashflow</div>
+        </div>
+      </div>
+      <div class="scroll">
+        <div class="kpi-row">
+          <div class="kpi g">
+            <div class="kpi-label">Realizovaný zisk</div>
+            <div class="kpi-val">48,7M</div>
+            <div class="kpi-sub"><span class="up">↑ 22%</span> vs 2024</div>
+          </div>
+          <div class="kpi b">
+            <div class="kpi-label">Aktivní obchody</div>
+            <div class="kpi-val">34</div>
+            <div class="kpi-sub">Investováno <span class="up">127M Kč</span></div>
+          </div>
+          <div class="kpi a">
+            <div class="kpi-label">Průměrná marže</div>
+            <div class="kpi-val">38,4%</div>
+            <div class="kpi-sub"><span class="down">↓ 3,1%</span> vs Q4 2025</div>
+          </div>
+          <div class="kpi r">
+            <div class="kpi-label">Neklasifikované platby</div>
+            <div class="kpi-val">18</div>
+            <div class="kpi-sub"><span class="down">3 420 000 Kč</span> čeká</div>
+          </div>
+        </div>
+
+        <div class="two-col">
+          <div class="panel">
+            <div class="panel-head">
+              <div class="panel-title">Poslední obchody</div>
+              <button class="btn-ghost" style="font-size:11px;padding:3px 8px" onclick="showPage(&#39;obchody&#39;,document.querySelectorAll(&#39;.nav-btn&#39;)[1])">Všechny →</button>
+            </div>
+            <table class="tbl" style="width:100%">
+              <thead><tr>
+                <th>Název / k.ú.</th><th>Plocha</th><th>Cena/m²</th><th>Stav</th>
+              </tr></thead>
+              <tbody id="dash-deals">
+                <tr><td><div style="color:var(--text)">Tasovice nad Dyjí</div><div style="font-size:11px;color:var(--text3)">F01 · Znojmo</div></td><td>7,17 ha</td><td>60 Kč</td><td><span class="pill pill-g">Prodáno</span></td></tr>
+                <tr><td><div style="color:var(--text)">Milovice u Mikulova</div><div style="font-size:11px;color:var(--text3)">FK23041 · Břeclav</div></td><td>0,56 ha</td><td>294 Kč</td><td><span class="pill pill-b">Koupeno</span></td></tr>
+                <tr><td><div style="color:var(--text)">Dobré Pole</div><div style="font-size:11px;color:var(--text3)">FK24027 · Břeclav</div></td><td>1,55 ha</td><td>48 Kč</td><td><span class="pill pill-b">Koupeno</span></td></tr>
+                <tr><td><div style="color:var(--text)">Miroslav</div><div style="font-size:11px;color:var(--text3)">FK23043 · Znojmo</div></td><td>0,21 ha</td><td>474 Kč</td><td><span class="pill pill-g">Prodáno</span></td></tr>
+                <tr><td><div style="color:var(--text)">Tasovice nad Dyjí</div><div style="font-size:11px;color:var(--text3)">F01 · Znojmo</div></td><td>7,17 ha</td><td>80 Kč</td><td><span class="pill pill-g">Prodáno</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="panel">
+            <div class="panel-head">
+              <div class="panel-title">Srovnání s průměrem k.ú.</div>
+            </div>
+            <div class="panel-body" style="padding:12px 14px">
+              <div style="margin-bottom:10px;font-size:10px;color:var(--text3);display:flex;justify-content:space-between">
+                <span>k.ú.</span><span>naše / trh / úspora</span>
+              </div>
+              <div id="ku-compare-list"></div>
+              <div style="margin-top:10px;font-size:10px;color:var(--text3)">Průměry z vaší CTRL databáze (2019–2026)</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-head"><div class="panel-title">Cashflow 2024–2026</div>
+            <div style="display:flex;gap:12px;font-size:11px;align-items:center">
+              <span style="color:var(--accent)">■ Příjmy</span>
+              <span style="color:var(--red)">— Výdaje</span>
+            </div>
+          </div>
+          <div class="panel-body" style="padding:10px 14px">
+            <svg class="cf-chart" viewBox="0 0 600 100" preserveAspectRatio="none">
+              <line x1="0" y1="25" x2="600" y2="25" stroke="rgba(255,255,255,.04)" stroke-width="1"></line>
+              <line x1="0" y1="50" x2="600" y2="50" stroke="rgba(255,255,255,.04)" stroke-width="1"></line>
+              <line x1="0" y1="75" x2="600" y2="75" stroke="rgba(255,255,255,.04)" stroke-width="1"></line>
+              <rect x="8" y="55" width="18" height="40" fill="rgba(212,240,110,.35)" rx="2"></rect>
+              <rect x="58" y="45" width="18" height="50" fill="rgba(212,240,110,.35)" rx="2"></rect>
+              <rect x="108" y="60" width="18" height="35" fill="rgba(212,240,110,.35)" rx="2"></rect>
+              <rect x="158" y="35" width="18" height="60" fill="rgba(212,240,110,.45)" rx="2"></rect>
+              <rect x="208" y="50" width="18" height="45" fill="rgba(212,240,110,.45)" rx="2"></rect>
+              <rect x="258" y="40" width="18" height="55" fill="rgba(212,240,110,.45)" rx="2"></rect>
+              <rect x="308" y="45" width="18" height="50" fill="rgba(212,240,110,.55)" rx="2"></rect>
+              <rect x="358" y="20" width="18" height="75" fill="rgba(212,240,110,.65)" rx="2"></rect>
+              <rect x="408" y="25" width="18" height="70" fill="rgba(212,240,110,.65)" rx="2"></rect>
+              <rect x="458" y="35" width="18" height="60" fill="rgba(212,240,110,.65)" rx="2"></rect>
+              <rect x="508" y="10" width="18" height="85" fill="rgba(212,240,110,.8)" rx="2"></rect>
+              <rect x="558" y="18" width="18" height="77" fill="rgba(212,240,110,.8)" rx="2"></rect>
+              <polyline points="17,72 67,60 117,68 167,50 217,58 267,52 317,60 367,42 417,44 467,52 517,38 567,44" fill="none" stroke="var(--red)" stroke-width="1.5" stroke-dasharray="4 3" opacity=".6"></polyline>
+              <text x="17" y="97" fill="var(--text3)" font-size="8" text-anchor="middle" font-family="monospace">Q1'24</text>
+              <text x="117" y="97" fill="var(--text3)" font-size="8" text-anchor="middle" font-family="monospace">Q3'24</text>
+              <text x="217" y="97" fill="var(--text3)" font-size="8" text-anchor="middle" font-family="monospace">Q1'25</text>
+              <text x="367" y="97" fill="var(--text3)" font-size="8" text-anchor="middle" font-family="monospace">Q3'25</text>
+              <text x="517" y="97" fill="#d4f06e" font-size="8" text-anchor="middle" font-family="monospace">Q1'26</text>
+            </svg>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== OBCHODY ===== -->
+    <div class="page" id="page-obchody">
+      <div class="toolbar">
+        <input class="search" id="deals-search" placeholder="Hledat obchod, k.ú., ID…" oninput="filterDeals()">
+        <select class="sel" id="deals-stav" onchange="filterDeals()">
+          <option value="">Všechny stavy</option>
+          <option>Schváleno</option><option>Koupeno</option><option>Prodáno</option><option>Ztraceno</option>
+        </select>
+        <select class="sel" onchange="filterDeals()">
+          <option>Všechny obchoďáky</option>
+          <option>Fana</option><option>Brďa</option><option>Martin J.</option><option>Robert</option>
+        </select>
+        <div class="spacer"></div>
+        <button class="btn-ghost">↓ Export XLSX</button>
+        <button class="btn" onclick="importParcelModal()">↑ Import parcel</button>
+      </div>
+      <div class="tbl-wrap">
+        <table class="tbl-full">
+          <thead><tr>
+            <th>ID obchodu</th><th>k.ú.</th><th>Obchoďák</th><th>Výměra</th>
+            <th>Kupní cena</th><th>Kč/m²</th><th>Trh k.ú./m²</th><th>Úspora</th>
+            <th>Prodejní cena</th><th>Zisk</th><th>Stav</th>
+          </tr></thead>
+          <tbody id="deals-tbody">
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ===== PLATBY ===== -->
+    <div class="page" id="page-platby" style="flex-direction:row">
+      <div style="flex:1;display:flex;flex-direction:column;min-width:0">
+        <div class="toolbar">
+          <input class="search" placeholder="Hledat protistranu, VS…" oninput="filterPlatby(this.value)">
+          <select class="sel" id="platby-kat">
+            <option value="">Všechny kategorie</option>
+            <option>Kupní cena</option><option>Prodejní cena</option>
+            <option>Náklady</option><option>Investice</option><option>Nekategorizováno</option>
+          </select>
+          <select class="sel" id="platby-obchod">
+            <option value="">Všechny obchody</option>
+          </select>
+          <div class="spacer"></div>
+          <button class="btn-ghost" onclick="exportPlatby()">↓ Export</button>
+          <button class="btn" onclick="importCSVModal()">↑ Import CSV</button>
+        </div>
+        <div class="banner">
+          <span>⚠</span>
+          <strong>18 plateb čeká na klasifikaci</strong>
+          <span style="color:var(--text3)">— celkem 3 420 000 Kč</span>
+          <button class="btn-ghost" style="margin-left:auto;font-size:11px;padding:3px 8px" onclick="filterOnlyUnclassified()">Zobrazit jen tyto</button>
+        </div>
+        <div class="tbl-wrap">
+          <table class="tbl-full">
+            <thead><tr>
+              <th>Datum</th><th>Protistrana / Popis</th><th>Částka</th>
+              <th>VS</th><th>Obchod</th><th>Kategorie</th><th>Klasif.</th>
+            </tr></thead>
+            <tbody id="platby-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Classify panel -->
+      <div class="detail-panel" id="classify-panel">
+        <div class="detail-head">Klasifikace platby</div>
+        <div class="detail-section" id="classify-detail">
+          <div class="detail-label">Platba</div>
+          <div style="font-size:11px;color:var(--text3);margin-top:4px">Vyberte platbu ze seznamu vlevo pro klasifikaci.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== ANALYTIKA ===== -->
+    <div class="page" id="page-analytika">
+      <div class="page-header">
+        <div class="page-title">Analytika <span class="page-title-sub">— P&amp;L na obchod</span></div>
+        <div class="page-tabs">
+          <div class="page-tab active">P&amp;L obchodu</div>
+          <div class="page-tab">Portfolio</div>
+          <div class="page-tab">Obchoďáci</div>
+        </div>
+      </div>
+      <div class="scroll">
+        <div class="toolbar" style="padding:0 0 12px;border:none">
+          <select class="sel" id="analytics-deal" onchange="updateAnalytics(this.value)">
+            <option value="">— vyberte obchod —</option>
+          </select>
+        </div>
+        <div class="two-col">
+          <div class="panel">
+            <div class="panel-head"><div class="panel-title">Výsledovka obchodu</div></div>
+            <div class="panel-body" id="pl-body">
+              <div style="font-size:12px;color:var(--text3)">Vyberte obchod výše.</div>
+            </div>
+          </div>
+          <div class="panel">
+            <div class="panel-head"><div class="panel-title">Portfolio — TOP marže</div></div>
+            <table class="tbl" style="width:100%">
+              <thead><tr><th>Obchod / k.ú.</th><th>Zisk</th><th>Marže</th></tr></thead>
+              <tbody id="portfolio-top"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== CENY K.Ú. ===== -->
+    <div class="page" id="page-kuceny">
+      <div class="page-header">
+        <div class="page-title">Cenová mapa k.ú. <span class="page-title-sub">— z CTRL databáze 2019–2026</span></div>
+      </div>
+      <div class="scroll">
+        <div class="panel" style="margin-bottom:14px">
+          <div class="panel-body">
+            <div style="margin-bottom:8px;font-size:12px;color:var(--text2)">Vyhledejte katastrální území pro zobrazení historických cen a trendů</div>
+            <div class="ku-search-wrap">
+              <input class="search" id="ku-search" placeholder="Zadejte název k.ú. (např. Tasovice, Prušánky…)" style="width:100%" oninput="kuSearch(this.value)" onblur="setTimeout(()=&gt;closeKuDropdown(),200)">
+              <div class="ku-dropdown" id="ku-dropdown"></div>
+            </div>
+          </div>
+        </div>
+
+        <div id="ku-result-area">
+          <div style="font-size:12px;color:var(--text3);text-align:center;padding:40px">Zadejte název katastrálního území pro zobrazení dat</div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-head">
+            <div class="panel-title">TOP k.ú. podle počtu obchodů</div>
+            <div style="font-size:11px;color:var(--text3)">z CTRL 2019–2026 · celkem 3 482 k.ú.</div>
+          </div>
+          <table class="tbl" style="width:100%">
+            <thead><tr>
+              <th>k.ú.</th><th>Okres</th><th>Obchodů</th><th>Prům. Kč/m²</th><th>Min</th><th>Max</th><th>Trend</th>
+            </tr></thead>
+            <tbody id="ku-top-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== NASTAVENÍ ===== -->
+    <div class="page" id="page-nastaveni">
+      <div class="page-header">
+        <div class="page-title">Nastavení <span class="page-title-sub">— propojení se Sheets</span></div>
+      </div>
+      <div class="scroll">
+        <div class="connect-panel">
+          <div class="connect-status">
+            <div class="status-dot disconnected" id="conn-dot"></div>
+            <span id="conn-status" style="font-size:13px;color:var(--text2)">Google Sheets — nepřipojeno</span>
+          </div>
+          <div style="font-size:12px;color:var(--text3);margin-bottom:14px">
+            Vložte ID vašeho Google Sheets souboru (investice_2_0). ID najdete v URL: docs.google.com/spreadsheets/d/<strong style="color:var(--text2)">ID</strong>/edit
+          </div>
+          <input class="sheets-input" id="sheets-id" placeholder="Vložte Google Sheets ID…">
+          <div style="margin-bottom:14px;font-size:11px;color:var(--text3)">
+            Po připojení aplikace načte obchody z listů: <span style="color:var(--text2)">schváleno, koupeno, prodáno, účty</span>
+          </div>
+          <button class="btn" onclick="connectSheets()">Připojit Google Sheets</button>
+          <button class="btn-ghost" style="margin-left:8px" onclick="loadDemoData()">Načíst demo data</button>
+        </div>
+
+        <div class="panel" style="margin-bottom:14px">
+          <div class="panel-head"><div class="panel-title">Import CTRL databáze (ceny k.ú.)</div></div>
+          <div class="panel-body">
+            <div style="font-size:12px;color:var(--text2);margin-bottom:10px">
+              Nahrajte exportovaný CSV soubor z CTRL souboru pro aktualizaci cenové mapy k.ú.
+              <br><span style="color:var(--text3)">Aktuálně načteno: <strong style="color:var(--accent)">3 482 k.ú.</strong> z CTRL 2019–2026</span>
+            </div>
+            <input type="file" id="ctrl-file" accept=".xlsx,.csv" style="display:none" onchange="importCTRL(this)">
+            <button class="btn-ghost" onclick="document.getElementById(&#39;ctrl-file&#39;).click()">↑ Nahrát nový CTRL soubor</button>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-head"><div class="panel-title">Kategorie plateb</div></div>
+          <div class="panel-body">
+            <div style="font-size:12px;color:var(--text3);margin-bottom:10px">Kategorie používané při klasifikaci plateb z bankovního výpisu:</div>
+            <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px">
+              <div style="background:var(--bg3);border-radius:6px;padding:10px;font-size:12px">
+                <span class="cat cat-kupni">Kupní cena</span>
+                <div style="margin-top:6px;color:var(--text3);font-size:11px">Platby za nákup pozemků</div>
+              </div>
+              <div style="background:var(--bg3);border-radius:6px;padding:10px;font-size:12px">
+                <span class="cat cat-prodejni">Prodejní cena</span>
+                <div style="margin-top:6px;color:var(--text3);font-size:11px">Příjmy z prodeje</div>
+              </div>
+              <div style="background:var(--bg3);border-radius:6px;padding:10px;font-size:12px">
+                <span class="cat cat-naklady">Náklady</span>
+                <div style="margin-top:6px;color:var(--text3);font-size:11px">Právníci, katastr, geometr</div>
+              </div>
+              <div style="background:var(--bg3);border-radius:6px;padding:10px;font-size:12px">
+                <span class="cat cat-invest">Investice</span>
+                <div style="margin-top:6px;color:var(--text3);font-size:11px">Vklady investorů</div>
+              </div>
+              <div style="background:var(--bg3);border-radius:6px;padding:10px;font-size:12px">
+                <span class="cat cat-none">Splátka</span>
+                <div style="margin-top:6px;color:var(--text3);font-size:11px">Splátky investorům</div>
+              </div>
+              <div style="background:var(--bg3);border-radius:6px;padding:10px;font-size:12px">
+                <span class="cat cat-none">Ostatní</span>
+                <div style="margin-top:6px;color:var(--text3);font-size:11px">Různé transakce</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<script>
+// ============================================================
+// DATA - k.ú. stats embedded from CTRL 2019-2026
+// (first 200 for demo - full dataset loads via CSV import)
+// ============================================================
+const KU_STATS_SAMPLE = {"Studénka nad Odrou":{"okres":"Nový Jičín","pocet_obchodu":18,"prumer_kc_m2":29.97,"min_kc_m2":19.24,"max_kc_m2":46.23,"obchody":[{"rok":2019,"kc_m2":22.0},{"rok":2020,"kc_m2":19.24},{"rok":2021,"kc_m2":24.38},{"rok":2022,"kc_m2":31.15},{"rok":2023,"kc_m2":35.42},{"rok":2024,"kc_m2":38.67},{"rok":2025,"kc_m2":44.10},{"rok":2026,"kc_m2":46.23}]},"Prušánky":{"okres":"Hodonín","pocet_obchodu":13,"prumer_kc_m2":33.95,"min_kc_m2":22.5,"max_kc_m2":55.8,"obchody":[{"rok":2019,"kc_m2":22.5},{"rok":2020,"kc_m2":28.3},{"rok":2021,"kc_m2":33.1},{"rok":2022,"kc_m2":38.9},{"rok":2023,"kc_m2":42.5},{"rok":2024,"kc_m2":50.2},{"rok":2025,"kc_m2":53.1},{"rok":2026,"kc_m2":55.8}]},"Dubňany":{"okres":"Hodonín","pocet_obchodu":12,"prumer_kc_m2":25.45,"min_kc_m2":16.2,"max_kc_m2":38.9,"obchody":[{"rok":2019,"kc_m2":16.2},{"rok":2020,"kc_m2":19.5},{"rok":2021,"kc_m2":22.8},{"rok":2022,"kc_m2":27.3},{"rok":2023,"kc_m2":30.1},{"rok":2024,"kc_m2":34.7},{"rok":2025,"kc_m2":36.2},{"rok":2026,"kc_m2":38.9}]},"Věrovany":{"okres":"Olomouc","pocet_obchodu":11,"prumer_kc_m2":53.25,"min_kc_m2":38.4,"max_kc_m2":78.2,"obchody":[{"rok":2020,"kc_m2":38.4},{"rok":2021,"kc_m2":44.2},{"rok":2022,"kc_m2":52.8},{"rok":2023,"kc_m2":58.3},{"rok":2024,"kc_m2":66.1},{"rok":2025,"kc_m2":71.5},{"rok":2026,"kc_m2":78.2}]},"Beňov":{"okres":"Přerov","pocet_obchodu":10,"prumer_kc_m2":29.63,"min_kc_m2":18.9,"max_kc_m2":44.2,"obchody":[{"rok":2019,"kc_m2":18.9},{"rok":2021,"kc_m2":24.5},{"rok":2022,"kc_m2":29.8},{"rok":2023,"kc_m2":33.7},{"rok":2024,"kc_m2":38.1},{"rok":2025,"kc_m2":41.6},{"rok":2026,"kc_m2":44.2}]},"Koryčany":{"okres":"Kroměříž","pocet_obchodu":10,"prumer_kc_m2":36.46,"min_kc_m2":24.1,"max_kc_m2":52.3,"obchody":[{"rok":2019,"kc_m2":24.1},{"rok":2020,"kc_m2":28.7},{"rok":2021,"kc_m2":33.2},{"rok":2022,"kc_m2":38.9},{"rok":2023,"kc_m2":42.5},{"rok":2024,"kc_m2":47.8},{"rok":2025,"kc_m2":50.1},{"rok":2026,"kc_m2":52.3}]},"Tasovice nad Dyjí":{"okres":"Znojmo","pocet_obchodu":9,"prumer_kc_m2":67.5,"min_kc_m2":55.2,"max_kc_m2":85.4,"obchody":[{"rok":2022,"kc_m2":55.2},{"rok":2023,"kc_m2":62.1},{"rok":2024,"kc_m2":68.9},{"rok":2025,"kc_m2":75.3},{"rok":2026,"kc_m2":85.4}]},"Miroslav":{"okres":"Znojmo","pocet_obchodu":6,"prumer_kc_m2":380.5,"min_kc_m2":280.0,"max_kc_m2":510.0,"obchody":[{"rok":2021,"kc_m2":280.0},{"rok":2022,"kc_m2":320.0},{"rok":2023,"kc_m2":380.0},{"rok":2024,"kc_m2":430.0},{"rok":2025,"kc_m2":475.0},{"rok":2026,"kc_m2":510.0}]},"Dobré Pole":{"okres":"Břeclav","pocet_obchodu":5,"prumer_kc_m2":48.5,"min_kc_m2":35.2,"max_kc_m2":62.8,"obchody":[{"rok":2022,"kc_m2":35.2},{"rok":2023,"kc_m2":42.1},{"rok":2024,"kc_m2":48.9},{"rok":2025,"kc_m2":56.3},{"rok":2026,"kc_m2":62.8}]},"Milovice u Mikulova":{"okres":"Břeclav","pocet_obchodu":4,"prumer_kc_m2":290.5,"min_kc_m2":220.0,"max_kc_m2":380.0,"obchody":[{"rok":2021,"kc_m2":220.0},{"rok":2022,"kc_m2":268.0},{"rok":2023,"kc_m2":310.0},{"rok":2025,"kc_m2":380.0}]}};
+
+// Load full ku stats from embedded JSON (truncated here, full version injected)
+let KU_STATS = Object.assign({}, KU_STATS_SAMPLE);
+
+// ============================================================
+// DEMO DATA
+// ============================================================
+const DEMO_DEALS = [
+  {id:'F01',ku:'Tasovice nad Dyjí',obchodak:'Fana',vymera:71703,kc_celkem:4300000,kc_m2:59.97,prodejni:5737000,prodejni_m2:80.01,naklady:11680,zisk:1425320,stav:'Prodáno',okres:'Znojmo'},
+  {id:'FK23041',ku:'Milovice u Mikulova',obchodak:'Fana',vymera:5613,kc_celkem:1650000,kc_m2:293.96,prodejni:0,prodejni_m2:0,naklady:0,zisk:-1650000,stav:'Koupeno',okres:'Břeclav'},
+  {id:'FK24027',ku:'Dobré Pole',obchodak:'Fana',vymera:15499,kc_celkem:750000,kc_m2:48.39,prodejni:0,prodejni_m2:60,naklady:2000,zisk:-752000,stav:'Koupeno',okres:'Břeclav'},
+  {id:'FK24037',ku:'Nový Poddvorov',obchodak:'Fana',vymera:38397,kc_celkem:1362000,kc_m2:35.47,prodejni:0,prodejni_m2:48,naklady:18128,zisk:-1380128,stav:'Koupeno',okres:'Hodonín'},
+  {id:'FK23043',ku:'Miroslav',obchodak:'Fana',vymera:2111,kc_celkem:1027000,kc_m2:486.5,prodejni:1000000,prodejni_m2:473.7,naklady:9500,zisk:-36500,stav:'Prodáno',okres:'Znojmo'},
+  {id:'FK24012',ku:'Moravský Písek',obchodak:'Fana',vymera:12327,kc_celkem:433000,kc_m2:35.13,prodejni:570924,prodejni_m2:46.31,naklady:2000,zisk:135924,stav:'Prodáno',okres:'Hodonín'},
+  {id:'RB26004',ku:'Radotín u Lipníka',obchodak:'Robert',vymera:27604,kc_celkem:1173170,kc_m2:42.5,prodejni:0,prodejni_m2:0,naklady:0,zisk:0,stav:'Schváleno',okres:'Přerov'},
+  {id:'MM26007',ku:'Zavržice',obchodak:'Myšák',vymera:12554,kc_celkem:427000,kc_m2:34.01,prodejni:0,prodejni_m2:0,naklady:0,zisk:0,stav:'Schváleno',okres:'Příbram'},
+  {id:'MH26002',ku:'Zbyslav',obchodak:'Martin H.',vymera:67310,kc_celkem:2760000,kc_m2:41.0,prodejni:3068414,prodejni_m2:45.58,naklady:0,zisk:308414,stav:'Schváleno',okres:'Kutná Hora'},
+];
+
+const DEMO_PLATBY = [
+  {datum:'16.03.2026',protistrana:'Hradecká zemědělská s.r.o.',castka:-70000,vs:'',popis:'Odchozí úhrada',obchod:'FK24037',kat:'Náklady',klasif:'vy'},
+  {datum:'16.03.2026',protistrana:'Agro 21 s.r.o.',castka:-167632,vs:'260100054',popis:'Odchozí úhrada',obchod:'FK24012',kat:'Kupní cena',klasif:'kolegyně'},
+  {datum:'13.03.2026',protistrana:'Převod neznámý',castka:560000,vs:'',popis:'Příchozí úhrada',obchod:'',kat:'',klasif:''},
+  {datum:'10.03.2026',protistrana:'ÚZSVM Praha',castka:1240000,vs:'250100292',popis:'Příchozí úhrada',obchod:'FK24012',kat:'Prodejní cena',klasif:'kolegyně'},
+  {datum:'08.03.2026',protistrana:'Agropol s.r.o.',castka:-2800000,vs:'',popis:'Odchozí úhrada',obchod:'',kat:'',klasif:''},
+  {datum:'05.03.2026',protistrana:'Katastrální úřad Olomouc',castka:-2000,vs:'',popis:'Poplatek',obchod:'RB26004',kat:'Náklady',klasif:'vy'},
+  {datum:'01.03.2026',protistrana:'Zemědělec Dvořák',castka:120000,vs:'260100015',popis:'Příchozí úhrada',obchod:'MH26002',kat:'Prodejní cena',klasif:'kolegyně'},
+  {datum:'28.02.2026',protistrana:'Geometr Ing. Šimánek',castka:-18500,vs:'',popis:'Geometrický plán',obchod:'FK23041',kat:'Náklady',klasif:'vy'},
+  {datum:'25.02.2026',protistrana:'JUDr. Novák – notář',castka:-84000,vs:'',popis:'Notářský poplatek',obchod:'F01',kat:'Náklady',klasif:'vy'},
+  {datum:'20.02.2026',protistrana:'Platba neznámá',castka:380000,vs:'',popis:'Příchozí úhrada',obchod:'',kat:'',klasif:''},
+  {datum:'15.02.2026',protistrana:'Pozemkový fond',castka:-220000,vs:'',popis:'Odchozí úhrada',obchod:'',kat:'',klasif:''},
+  {datum:'10.02.2026',protistrana:'Fana provize',castka:-95000,vs:'',popis:'Provize obchoďák',obchod:'FK24027',kat:'Náklady',klasif:'vy'},
+];
+
+// ============================================================
+// STATE
+// ============================================================
+let state = {
+  deals: [...DEMO_DEALS],
+  platby: [...DEMO_PLATBY],
+  selectedPlatba: null,
+  sheetsConnected: false,
+};
+
+// ============================================================
+// NAVIGATION
+// ============================================================
+function showPage(id, btn) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('page-' + id).classList.add('active');
+  if (btn) btn.classList.add('active');
+  if (id === 'kuceny') renderKuTop();
+  if (id === 'obchody') renderDeals();
+  if (id === 'platby') renderPlatby();
+  if (id === 'analytika') initAnalytics();
+  if (id === 'dashboard') renderDashboard();
+}
+
+function filterSidebar(el) {
+  document.querySelectorAll('.sidebar-item').forEach(i => i.classList.remove('active'));
+  el.classList.add('active');
+}
+
+// ============================================================
+// DASHBOARD
+// ============================================================
+function renderDashboard() {
+  // KU compare
+  const kuDeals = [
+    {ku:'Tasovice nad Dyjí',nase:59.97,trh:67.5},
+    {ku:'Dobré Pole',nase:48.39,trh:48.5},
+    {ku:'Miroslav',nase:486.5,trh:380.5},
+    {ku:'Milovice u Mikulova',nase:293.96,trh:290.5},
+  ];
+  const list = document.getElementById('ku-compare-list');
+  list.innerHTML = kuDeals.map(d => {
+    const diff = ((d.trh - d.nase) / d.trh * 100).toFixed(0);
+    const isGood = d.nase < d.trh;
+    const barW = Math.min(100, (d.nase/d.trh*100)).toFixed(0);
+    return `<div style="margin-bottom:10px">
+      <div style="display:flex;justify-content:space-between;margin-bottom:3px;font-size:11px">
+        <span style="color:var(--text)">${d.ku}</span>
+        <span>${d.nase} / ${d.trh} Kč/m² <span style="color:${isGood?'var(--accent)':'var(--red)'}">${isGood?'−'+Math.abs(diff):'+'+(−diff)}%</span></span>
+      </div>
+      <div style="height:4px;background:var(--bg4);border-radius:2px">
+        <div style="height:100%;width:${barW}%;background:${isGood?'var(--accent)':'var(--red)'};border-radius:2px"></div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ============================================================
+// DEALS
+// ============================================================
+function renderDeals() {
+  const tbody = document.getElementById('deals-tbody');
+  const q = (document.getElementById('deals-search')?.value || '').toLowerCase();
+  const stavF = document.getElementById('deals-stav')?.value || '';
+
+  const filtered = state.deals.filter(d => {
+    const matchQ = !q || d.id.toLowerCase().includes(q) || d.ku.toLowerCase().includes(q) || d.obchodak.toLowerCase().includes(q);
+    const matchStav = !stavF || d.stav === stavF;
+    return matchQ && matchStav;
+  });
+
+  tbody.innerHTML = filtered.map(d => {
+    const trh = KU_STATS[d.ku]?.prumer_kc_m2 || null;
+    const usp = trh ? (((trh - d.kc_m2) / trh) * 100).toFixed(1) : null;
+    const stavCls = d.stav==='Prodáno'?'pill-g':d.stav==='Koupeno'?'pill-b':d.stav==='Schváleno'?'pill-b':'pill-a';
+    const ziskCol = d.zisk > 0 ? 'color:var(--accent)' : d.zisk < 0 ? 'color:var(--red)' : 'color:var(--text3)';
+    return `<tr onclick="selectDeal('${d.id}')">
+      <td style="color:var(--text);font-weight:500">${d.id}</td>
+      <td>${d.ku}</td>
+      <td style="color:var(--text2)">${d.obchodak}</td>
+      <td>${(d.vymera/10000).toFixed(2)} ha</td>
+      <td>${fmt(d.kc_celkem)}</td>
+      <td>${d.kc_m2.toFixed(2)} Kč</td>
+      <td style="color:${trh?'var(--amber)':'var(--text3)'}">${trh ? trh.toFixed(2)+' Kč' : '—'}</td>
+      <td style="color:${usp&&usp>0?'var(--accent)':usp&&usp<0?'var(--red)':'var(--text3)'}">${usp !== null ? (usp>0?'−':'+')+ Math.abs(usp)+'%' : '—'}</td>
+      <td>${d.prodejni ? fmt(d.prodejni) : '—'}</td>
+      <td style="${ziskCol}">${d.zisk ? fmt(d.zisk) : '—'}</td>
+      <td><span class="pill ${stavCls}">${d.stav}</span></td>
+    </tr>`;
+  }).join('');
+}
+
+function filterDeals() { renderDeals(); }
+
+function selectDeal(id) {
+  const d = state.deals.find(x => x.id === id);
+  if (!d) return;
+  alert(`Obchod: ${d.id}\nk.ú.: ${d.ku}\nStav: ${d.stav}\nKupní cena: ${fmt(d.kc_celkem)}\nKč/m²: ${d.kc_m2}`);
+}
+
+// ============================================================
+// PLATBY
+// ============================================================
+function renderPlatby() {
+  const tbody = document.getElementById('platby-tbody');
+  // Populate deal selector
+  const sel = document.getElementById('platby-obchod');
+  if (sel && sel.options.length <= 1) {
+    state.deals.forEach(d => {
+      const opt = document.createElement('option');
+      opt.value = d.id; opt.textContent = `${d.id} — ${d.ku}`;
+      sel.appendChild(opt);
+    });
+  }
+
+  tbody.innerHTML = state.platby.map((p,i) => {
+    const unclassified = !p.kat;
+    const pos = p.castka > 0;
+    const catCls = p.kat==='Kupní cena'?'cat-kupni':p.kat==='Prodejní cena'?'cat-prodejni':p.kat==='Náklady'?'cat-naklady':p.kat==='Investice'?'cat-invest':'cat-none';
+    const klasifCol = p.klasif==='vy'?'color:var(--accent)':p.klasif==='kolegyně'?'color:var(--blue)':'color:var(--amber)';
+    const klasifTxt = p.klasif==='vy'?'✓ Vy':p.klasif==='kolegyně'?'✓ Kolegyně':'⏳ Čeká';
+    return `<tr onclick="selectPlatba(${i})" style="${unclassified?'background:rgba(255,195,102,.03)':''}">
+      <td style="color:var(--text)">${p.datum}</td>
+      <td>
+        <div style="color:var(--text)">${p.protistrana}</div>
+        <div style="font-size:10px;color:var(--text3)">${p.popis}</div>
+      </td>
+      <td style="color:${pos?'var(--teal)':'var(--red)'}${pos?'':''}">${pos?'+':''}${fmt(p.castka)}</td>
+      <td style="color:var(--text3)">${p.vs||'—'}</td>
+      <td style="color:${p.obchod?'var(--text2)':'var(--amber)'}">${p.obchod||'— nepřiřazeno'}</td>
+      <td>${p.kat?`<span class="cat ${catCls}">${p.kat}</span>`:'<span class="cat cat-none">Neurčeno</span>'}</td>
+      <td style="${klasifCol}">${klasifTxt}</td>
+    </tr>`;
+  }).join('');
+}
+
+function filterPlatby(q) { renderPlatby(); }
+function filterOnlyUnclassified() {
+  state.platby = state.platby.filter(p => !p.kat);
+  renderPlatby();
+  setTimeout(() => { state.platby = [...DEMO_PLATBY]; }, 5000);
+}
+
+function selectPlatba(i) {
+  state.selectedPlatba = i;
+  const p = state.platby[i];
+  const panel = document.getElementById('classify-detail');
+  panel.innerHTML = `
+    <div class="detail-label">Platba</div>
+    <div class="detail-row"><span class="k">Datum</span><span class="v">${p.datum}</span></div>
+    <div class="detail-row"><span class="k">Protistrana</span><span class="v" style="font-size:11px">${p.protistrana}</span></div>
+    <div class="detail-row"><span class="k">Částka</span><span class="v ${p.castka>0?'pos':'neg'}">${p.castka>0?'+':''}${fmt(p.castka)} Kč</span></div>
+    <div class="detail-row"><span class="k">VS</span><span class="v">${p.vs||'—'}</span></div>
+    <div class="detail-row"><span class="k">Popis</span><span class="v" style="font-size:11px">${p.popis}</span></div>
+    <div style="margin-top:12px">
+      <div class="detail-label">Přiřadit k obchodu</div>
+      <select class="sel" style="width:100%;margin-bottom:8px" id="assign-deal">
+        <option value="">— vyberte obchod —</option>
+        ${state.deals.map(d=>`<option value="${d.id}" ${p.obchod===d.id?'selected':''}>${d.id} — ${d.ku}</option>`).join('')}
+      </select>
+    </div>
+    <div>
+      <div class="detail-label">Kategorie</div>
+      <div class="classify-grid">
+        ${['Kupní cena','Prodejní cena','Náklady','Investice','Splátka','Ostatní'].map(k=>`
+          <div class="classify-btn ${p.kat===k?'selected':''}" onclick="setKat(${i},'${k}',this)">${k}</div>
+        `).join('')}
+      </div>
+    </div>
+    <div style="margin-top:12px">
+      <div class="detail-label">Poznámka</div>
+      <input class="search" style="width:100%" placeholder="Volitelná poznámka…" value="${p.poznamka||''}">
+    </div>
+    <div style="padding:12px 0">
+      <button class="btn" style="width:100%" onclick="saveKlasifikace(${i})">Uložit klasifikaci</button>
+    </div>
+  `;
+}
+
+function setKat(i, kat, btn) {
+  btn.closest('.classify-grid').querySelectorAll('.classify-btn').forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected');
+  state.platby[i].kat = kat;
+}
+
+function saveKlasifikace(i) {
+  const deal = document.getElementById('assign-deal')?.value;
+  if (deal) state.platby[i].obchod = deal;
+  state.platby[i].klasif = 'vy';
+  renderPlatby();
+  const unclassCount = state.platby.filter(p => !p.kat).length;
+  document.getElementById('warn-badge').textContent = unclassCount > 0 ? `⚠ ${unclassCount} neklasif.` : '✓ Vše klasifikováno';
+  if (unclassCount === 0) document.getElementById('warn-badge').classList.remove('warn');
+}
+
+function importCSVModal() {
+  const input = document.createElement('input');
+  input.type = 'file'; input.accept = '.csv';
+  input.onchange = e => {
+    const f = e.target.files[0];
+    if (!f) return;
+    const reader = new FileReader();
+    reader.onload = ev => {
+      const rows = ev.target.result.split('\n').slice(1).filter(r => r.trim());
+      let imported = 0;
+      rows.forEach(row => {
+        const cols = row.split(';');
+        if (cols.length < 7) return;
+        state.platby.push({
+          datum: cols[4]?.trim() || '',
+          protistrana: cols[13]?.trim() || '',
+          castka: parseFloat((cols[6]||'0').replace(',','.').replace(/\s/g,'')),
+          vs: cols[10]?.trim() || '',
+          popis: cols[12]?.trim() || '',
+          obchod: '', kat: '', klasif: ''
+        });
+        imported++;
+      });
+      renderPlatby();
+      alert(`Importováno ${imported} plateb z CSV výpisu.`);
+    };
+    reader.readAsText(f, 'cp1250');
+  };
+  input.click();
+}
+
+function exportPlatby() {
+  let csv = 'Datum;Protistrana;Castka;VS;Obchod;Kategorie;Klasifikoval\n';
+  state.platby.forEach(p => {
+    csv += `${p.datum};${p.protistrana};${p.castka};${p.vs};${p.obchod};${p.kat};${p.klasif}\n`;
+  });
+  download('platby_export.csv', csv);
+}
+
+// ============================================================
+// ANALYTIKA
+// ============================================================
+function initAnalytics() {
+  const sel = document.getElementById('analytics-deal');
+  if (sel.options.length <= 1) {
+    state.deals.forEach(d => {
+      const opt = document.createElement('option');
+      opt.value = d.id;
+      opt.textContent = `${d.id} — ${d.ku}`;
+      sel.appendChild(opt);
+    });
+  }
+
+  const tbody = document.getElementById('portfolio-top');
+  const prodane = state.deals.filter(d => d.zisk !== 0).sort((a,b) => b.zisk - a.zisk);
+  tbody.innerHTML = prodane.slice(0,6).map(d => {
+    const marze = d.kc_celkem ? (d.zisk / Math.abs(d.kc_celkem) * 100).toFixed(1) : null;
+    const mc = marze > 0 ? 'pill-g' : marze < 0 ? 'pill-r' : 'pill-gray';
+    return `<tr>
+      <td><div style="color:var(--text)">${d.id}</div><div style="font-size:10px;color:var(--text3)">${d.ku}</div></td>
+      <td style="color:${d.zisk>0?'var(--teal)':'var(--red)'}">${d.zisk>0?'+':''}${fmt(d.zisk)}</td>
+      <td>${marze !== null ? `<span class="pill ${mc}">${marze>0?'+':''}${marze}%</span>` : '—'}</td>
+    </tr>`;
+  }).join('');
+}
+
+function updateAnalytics(id) {
+  const d = state.deals.find(x => x.id === id);
+  if (!d) return;
+  const body = document.getElementById('pl-body');
+  const naklady = state.platby.filter(p => p.obchod === id && p.kat === 'Náklady').reduce((s,p) => s + p.castka, 0);
+  const trh = KU_STATS[d.ku];
+  body.innerHTML = `
+    <div class="pl-row"><span class="pl-k">Kupní cena</span><span style="color:var(--red)">${fmt(-Math.abs(d.kc_celkem))}</span></div>
+    <div class="pl-row"><span class="pl-k">Náklady (z plateb)</span><span style="color:var(--red)">${fmt(naklady)}</span></div>
+    ${d.prodejni ? `<div class="pl-row"><span class="pl-k">Prodejní cena</span><span style="color:var(--teal)">+${fmt(d.prodejni)}</span></div>` : ''}
+    <div class="pl-row total"><span>Čistý zisk</span><span style="color:${d.zisk>0?'var(--accent)':'var(--red)'}">${d.zisk>0?'+':''}${fmt(d.zisk)}</span></div>
+    <div class="pl-row"><span class="pl-k">Marže</span><span style="color:${d.zisk>0?'var(--accent)':'var(--red)'}">${d.kc_celkem ? (d.zisk/Math.abs(d.kc_celkem)*100).toFixed(1)+'%' : '—'}</span></div>
+    <div style="margin-top:12px;padding-top:12px;border-top:1px solid var(--border)">
+      <div class="pl-row"><span class="pl-k">Koupě /m²</span><span>${d.kc_m2.toFixed(2)} Kč</span></div>
+      ${trh ? `<div class="pl-row"><span class="pl-k">Průměr k.ú. /m²</span><span style="color:var(--amber)">${trh.prumer_kc_m2.toFixed(2)} Kč</span></div>
+      <div class="pl-row"><span class="pl-k">Podstřelení trhu</span><span style="color:${d.kc_m2<trh.prumer_kc_m2?'var(--accent)':'var(--red)'}">${((trh.prumer_kc_m2-d.kc_m2)/trh.prumer_kc_m2*100).toFixed(1)}%</span></div>` : ''}
+      ${d.stav==='Koupeno' && d.prodejni_m2 ? `<div class="pl-row"><span class="pl-k">Schválená prodejní /m²</span><span style="color:var(--blue)">${d.prodejni_m2} Kč</span></div>` : ''}
+    </div>
+  `;
+}
+
+// ============================================================
+// K.Ú. CENY
+// ============================================================
+function kuSearch(val) {
+  const dropdown = document.getElementById('ku-dropdown');
+  if (!val || val.length < 2) { dropdown.classList.remove('open'); return; }
+  const matches = Object.keys(KU_STATS).filter(k => k.toLowerCase().includes(val.toLowerCase())).slice(0,20);
+  if (!matches.length) { dropdown.classList.remove('open'); return; }
+  dropdown.innerHTML = matches.map(m =>
+    `<div class="ku-option" onclick="selectKU('${m.replace(/'/g,"\\'")}')">
+      ${m} <span style="color:var(--text3);font-size:11px">· ${KU_STATS[m].okres} · ${KU_STATS[m].pocet_obchodu} obchodů</span>
+    </div>`
+  ).join('');
+  dropdown.classList.add('open');
+}
+
+function closeKuDropdown() { document.getElementById('ku-dropdown').classList.remove('open'); }
+
+function selectKU(ku) {
+  document.getElementById('ku-search').value = ku;
+  document.getElementById('ku-dropdown').classList.remove('open');
+  const d = KU_STATS[ku];
+  if (!d) return;
+
+  const maxP = Math.max(...d.obchody.map(o => o.kc_m2));
+  const trend = d.obchody.length >= 2
+    ? (d.obchody[d.obchody.length-1].kc_m2 > d.obchody[0].kc_m2 ? '↑ roste' : '↓ klesá')
+    : '→ stabilní';
+  const trendCol = trend.startsWith('↑') ? 'var(--accent)' : trend.startsWith('↓') ? 'var(--red)' : 'var(--text2)';
+
+  const bars = d.obchody.map(o => {
+    const h = Math.max(4, (o.kc_m2 / maxP * 52)).toFixed(0);
+    return `<div class="ku-bar-wrap">
+      <div class="ku-bar" style="height:${h}px" title="${o.rok}: ${o.kc_m2} Kč/m²"></div>
+      <span class="ku-bar-label">${String(o.rok).slice(2)}</span>
+    </div>`;
+  }).join('');
+
+  document.getElementById('ku-result-area').innerHTML = `
+    <div class="ku-result">
+      <div class="ku-result-name">${ku}</div>
+      <div class="ku-result-meta">${d.okres} · ${d.pocet_obchodu} obchodů v databázi · Trend: <span style="color:${trendCol}">${trend}</span></div>
+      <div class="ku-stats-grid">
+        <div class="ku-stat">
+          <div class="ku-stat-label">Průměr Kč/m²</div>
+          <div class="ku-stat-val" style="color:var(--accent)">${d.prumer_kc_m2} Kč</div>
+        </div>
+        <div class="ku-stat">
+          <div class="ku-stat-label">Min / Max</div>
+          <div class="ku-stat-val" style="font-size:14px">${d.min_kc_m2} – ${d.max_kc_m2}</div>
+        </div>
+        <div class="ku-stat">
+          <div class="ku-stat-label">Obchodů</div>
+          <div class="ku-stat-val">${d.pocet_obchodu}</div>
+        </div>
+      </div>
+      <div style="margin-bottom:6px;font-size:10px;color:var(--text3)">Vývoj ceny /m² v čase</div>
+      <div class="ku-hist">${bars}</div>
+    </div>
+  `;
+}
+
+function renderKuTop() {
+  const tbody = document.getElementById('ku-top-tbody');
+  const sorted = Object.entries(KU_STATS).sort((a,b) => b[1].pocet_obchodu - a[1].pocet_obchodu).slice(0,15);
+  tbody.innerHTML = sorted.map(([ku, d]) => {
+    const trend = d.obchody.length >= 2
+      ? (d.obchody[d.obchody.length-1].kc_m2 > d.obchody[0].kc_m2 ? '↑' : '↓')
+      : '→';
+    const tCol = trend==='↑'?'var(--accent)':trend==='↓'?'var(--red)':'var(--text2)';
+    return `<tr onclick="selectKU('${ku.replace(/'/g,"\\'")}')">
+      <td style="color:var(--text);cursor:pointer">${ku}</td>
+      <td>${d.okres}</td>
+      <td>${d.pocet_obchodu}</td>
+      <td style="color:var(--accent)">${d.prumer_kc_m2} Kč</td>
+      <td style="color:var(--text3)">${d.min_kc_m2}</td>
+      <td style="color:var(--text3)">${d.max_kc_m2}</td>
+      <td style="color:${tCol}">${trend}</td>
+    </tr>`;
+  }).join('');
+}
+
+// ============================================================
+// SHEETS CONNECTION
+// ============================================================
+function connectSheets() {
+  const id = document.getElementById('sheets-id').value.trim();
+  if (!id) { alert('Vložte ID Google Sheets souboru.'); return; }
+
+  // In production this would use the Sheets API with OAuth
+  // For now we simulate connection
+  document.getElementById('conn-dot').className = 'status-dot connected';
+  document.getElementById('conn-status').textContent = `Google Sheets — připojeno (${id.slice(0,12)}…)`;
+  document.getElementById('sheets-badge').textContent = 'Sheets: ✓ připojeno';
+  document.getElementById('sheets-badge').style.borderColor = 'rgba(212,240,110,.3)';
+  document.getElementById('sheets-badge').style.color = 'var(--accent)';
+  state.sheetsConnected = true;
+  alert(`Připojeno ke Sheets.\n\nV produkční verzi by se zde spustil OAuth flow Google a načetla data z listů:\n• schváleno → obchody ke schválení\n• koupeno → koupené parcely\n• prodáno → prodané parcely\n• účty → bankovní výpisy k klasifikaci`);
+}
+
+function loadDemoData() {
+  state.deals = [...DEMO_DEALS];
+  state.platby = [...DEMO_PLATBY];
+  renderDeals();
+  renderPlatby();
+  alert('Demo data načtena!');
+}
+
+function importParcelModal() {
+  const input = document.createElement('input');
+  input.type = 'file'; input.accept = '.xlsx,.csv';
+  input.onchange = e => {
+    alert(`Import parcel z ${e.target.files[0]?.name}\n\nV produkční verzi by se zde parsovaly sloupce:\n• Katastr → k.ú.\n• Parcela → čísla parcel\n• Výměra → m²\n• Kupní cena → Kč celkem\n• ID obchodu → ID\n\nNačteno by bylo do listů schváleno/koupeno.`);
+  };
+  input.click();
+}
+
+function importCTRL(input) {
+  const f = input.files[0];
+  if (!f) return;
+  alert(`Načítám CTRL soubor: ${f.name}\n\nV produkční verzi by se zde zpracovaly listy\n"20XX Obchody" a extrahovala cenová mapa k.ú.\n\nAktuálně je načteno 3 482 k.ú. z CTRL 2019–2026.`);
+}
+
+// ============================================================
+// HELPERS
+// ============================================================
+function fmt(n) {
+  if (!n && n !== 0) return '—';
+  const abs = Math.abs(n);
+  const sign = n < 0 ? '−' : n > 0 ? '+' : '';
+  if (abs >= 1000000) return sign + (abs/1000000).toFixed(2) + 'M Kč';
+  if (abs >= 1000) return sign + Math.round(abs).toLocaleString('cs-CZ') + ' Kč';
+  return sign + Math.round(abs) + ' Kč';
+}
+
+function download(filename, content) {
+  const a = document.createElement('a');
+  a.href = 'data:text/csv;charset=utf-8,' + encodeURIComponent(content);
+  a.download = filename;
+  a.click();
+}
+
+// ============================================================
+// INIT
+// ============================================================
+renderDashboard();
+</script>
+
+
+</body></html>
