@@ -1,5 +1,1036 @@
 <!DOCTYPE html>
-<!-- saved from url=(0043)file:///C:/Users/rytir/Downloads/index.html -->
+<!-- saved from url=(0045)file:///C:/Users/rytir/Downloads/index_1.html -->
+<html lang="cs"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PZMsys — Evidence pozemků</title>
+<link href="./index_files/css2" rel="stylesheet">
+<style>
+:root {
+  --bg:#0d0d0d;--bg2:#141414;--bg3:#1c1c1c;--bg4:#242424;
+  --border:rgba(255,255,255,.07);--border2:rgba(255,255,255,.12);
+  --text:#e8e6df;--text2:#9a9890;--text3:#5a5856;
+  --accent:#d4f06e;--accent2:#a8c84a;
+  --red:#ff6b6b;--blue:#6bb5ff;--amber:#ffc366;--teal:#5dd6b0;
+  --mono:'IBM Plex Mono',monospace;--sans:'IBM Plex Sans',sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html,body{height:100%;background:var(--bg);color:var(--text);font-family:var(--mono);font-size:13px;overflow:hidden;}
+.app{display:grid;grid-template-rows:48px 1fr;grid-template-columns:220px 1fr;height:100vh;}
+.topbar{grid-column:1/-1;background:var(--bg2);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 16px;gap:0;z-index:10;}
+.sidebar{background:var(--bg2);border-right:1px solid var(--border);overflow-y:auto;display:flex;flex-direction:column;}
+.main{overflow:hidden;display:flex;flex-direction:column;}
+.logo{font-family:var(--sans);font-weight:600;font-size:14px;color:var(--accent);letter-spacing:.05em;margin-right:28px;white-space:nowrap;}
+.logo em{color:var(--text3);font-style:normal;font-weight:300;}
+.nav{display:flex;height:100%;}
+.nav-btn{height:100%;padding:0 14px;font-family:var(--mono);font-size:12px;color:var(--text3);background:none;border:none;border-bottom:2px solid transparent;cursor:pointer;transition:all .15s;white-space:nowrap;}
+.nav-btn:hover{color:var(--text);}
+.nav-btn.active{color:var(--accent);border-bottom-color:var(--accent);}
+.topbar-right{margin-left:auto;display:flex;align-items:center;gap:8px;}
+.badge{background:var(--bg4);border:1px solid var(--border2);border-radius:4px;padding:3px 8px;font-size:11px;color:var(--text3);}
+.badge.warn{background:rgba(255,195,102,.08);border-color:rgba(255,195,102,.2);color:var(--amber);}
+.badge.ok{background:rgba(212,240,110,.08);border-color:rgba(212,240,110,.2);color:var(--accent);}
+.btn{background:var(--accent);color:#0d0d0d;border:none;border-radius:6px;padding:5px 12px;font-family:var(--mono);font-size:12px;font-weight:500;cursor:pointer;transition:background .15s;}
+.btn:hover{background:var(--accent2);}
+.btn-ghost{background:transparent;color:var(--text2);border:1px solid var(--border2);border-radius:6px;padding:5px 12px;font-family:var(--mono);font-size:12px;cursor:pointer;transition:all .15s;}
+.btn-ghost:hover{color:var(--text);border-color:var(--text3);}
+.sidebar-section{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;padding:10px 14px 4px;margin-top:4px;}
+.sidebar-item{display:flex;align-items:center;gap:8px;padding:7px 14px;font-size:12px;color:var(--text2);cursor:pointer;user-select:none;transition:all .1s;}
+.sidebar-item:hover{color:var(--text);background:var(--bg3);}
+.sidebar-item.active{color:var(--accent);background:rgba(212,240,110,.05);}
+.sidebar-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0;}
+.sidebar-count{margin-left:auto;font-size:10px;color:var(--text3);background:var(--bg4);padding:1px 5px;border-radius:3px;}
+.sidebar-count.warn{background:rgba(255,195,102,.1);color:var(--amber);}
+.page{display:none;flex-direction:column;flex:1;overflow:hidden;}
+.page.active{display:flex;animation:fadeIn .15s ease;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
+.page-header{padding:16px 20px 0;border-bottom:1px solid var(--border);background:var(--bg);flex-shrink:0;}
+.page-title{font-family:var(--sans);font-size:18px;font-weight:600;margin-bottom:12px;display:flex;align-items:baseline;gap:10px;}
+.page-title-sub{font-size:12px;color:var(--text3);font-weight:300;}
+.page-tabs{display:flex;}
+.page-tab{padding:8px 14px;font-size:12px;color:var(--text3);cursor:pointer;border-bottom:2px solid transparent;transition:all .12s;user-select:none;}
+.page-tab:hover{color:var(--text);}
+.page-tab.active{color:var(--accent);border-bottom-color:var(--accent);}
+.scroll{flex:1;overflow-y:auto;padding:16px 20px;}
+.kpi-row{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px;}
+.kpi{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:14px;position:relative;overflow:hidden;}
+.kpi::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;}
+.kpi.g::before{background:var(--accent);}
+.kpi.b::before{background:var(--blue);}
+.kpi.a::before{background:var(--amber);}
+.kpi.r::before{background:var(--red);}
+.kpi-label{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px;}
+.kpi-val{font-family:var(--sans);font-size:22px;font-weight:600;color:var(--text);line-height:1;}
+.kpi-sub{font-size:11px;color:var(--text2);margin-top:5px;}
+.two-col{display:grid;grid-template-columns:1.3fr 1fr;gap:12px;margin-bottom:12px;}
+.panel{background:var(--bg2);border:1px solid var(--border);border-radius:10px;overflow:hidden;}
+.panel-head{padding:10px 14px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
+.panel-title{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;}
+.panel-body{padding:14px;}
+.tbl{width:100%;border-collapse:collapse;font-size:12px;}
+.tbl th{color:var(--text3);font-size:10px;text-transform:uppercase;letter-spacing:.05em;padding:0 10px 8px;text-align:left;font-weight:400;white-space:nowrap;}
+.tbl td{padding:9px 10px;border-top:1px solid var(--border);color:var(--text2);white-space:nowrap;}
+.tbl tr{cursor:pointer;transition:background .1s;}
+.tbl tr:hover td{background:var(--bg3);color:var(--text);}
+.tbl-full{width:100%;border-collapse:collapse;font-size:12px;}
+.tbl-full th{position:sticky;top:0;background:var(--bg2);color:var(--text3);font-size:10px;text-transform:uppercase;letter-spacing:.05em;padding:10px 12px;text-align:left;font-weight:400;border-bottom:1px solid var(--border);white-space:nowrap;z-index:1;}
+.tbl-full td{padding:9px 12px;border-bottom:1px solid var(--border);color:var(--text2);}
+.tbl-full tr:hover td{background:var(--bg3);}
+.tbl-wrap{flex:1;overflow:auto;}
+.pill{display:inline-flex;align-items:center;padding:2px 7px;border-radius:4px;font-size:10px;font-weight:500;}
+.pill-g{background:rgba(212,240,110,.1);color:var(--accent);}
+.pill-b{background:rgba(107,181,255,.1);color:var(--blue);}
+.pill-a{background:rgba(255,195,102,.1);color:var(--amber);}
+.pill-r{background:rgba(255,107,107,.1);color:var(--red);}
+.pill-gray{background:var(--bg4);color:var(--text2);}
+.cat{display:inline-block;padding:2px 7px;border-radius:4px;font-size:10px;}
+.cat-kupni{background:rgba(107,181,255,.1);color:var(--blue);}
+.cat-prodejni{background:rgba(93,214,176,.1);color:var(--teal);}
+.cat-naklady{background:rgba(255,195,102,.1);color:var(--amber);}
+.cat-invest{background:rgba(212,240,110,.1);color:var(--accent);}
+.cat-none{background:var(--bg4);color:var(--text3);}
+.toolbar{padding:12px 20px;display:flex;align-items:center;gap:8px;border-bottom:1px solid var(--border);flex-shrink:0;}
+.search{background:var(--bg3);border:1px solid var(--border2);border-radius:6px;padding:6px 10px;color:var(--text);font-family:var(--mono);font-size:12px;width:200px;outline:none;}
+.search:focus{border-color:var(--accent);}
+.sel{background:var(--bg3);border:1px solid var(--border2);border-radius:6px;padding:6px 10px;color:var(--text2);font-family:var(--mono);font-size:12px;outline:none;cursor:pointer;}
+.spacer{flex:1;}
+.banner{margin:12px 20px 0;background:rgba(255,195,102,.06);border:1px solid rgba(255,195,102,.18);border-radius:7px;padding:9px 14px;display:flex;align-items:center;gap:10px;font-size:12px;color:var(--amber);flex-shrink:0;}
+.detail-panel{width:280px;background:var(--bg2);border-left:1px solid var(--border);flex-shrink:0;display:flex;flex-direction:column;overflow-y:auto;}
+.detail-head{padding:14px 16px;border-bottom:1px solid var(--border);font-family:var(--sans);font-size:13px;font-weight:600;}
+.detail-section{padding:12px 16px;border-bottom:1px solid var(--border);}
+.detail-label{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px;}
+.detail-row{display:flex;justify-content:space-between;margin-bottom:5px;font-size:12px;}
+.detail-row .k{color:var(--text2);}
+.detail-row .v{color:var(--text);}
+.detail-row .v.pos{color:var(--accent);}
+.detail-row .v.neg{color:var(--red);}
+.classify-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:8px;}
+.classify-btn{background:var(--bg3);border:1px solid var(--border2);border-radius:6px;padding:7px 6px;color:var(--text2);font-family:var(--mono);font-size:11px;cursor:pointer;text-align:center;transition:all .12s;user-select:none;}
+.classify-btn:hover{border-color:var(--accent);color:var(--accent);}
+.classify-btn.selected{background:rgba(212,240,110,.08);border-color:var(--accent);color:var(--accent);}
+.ku-search-wrap{position:relative;}
+.ku-dropdown{position:absolute;top:100%;left:0;right:0;background:var(--bg3);border:1px solid var(--border2);border-radius:6px;z-index:100;max-height:240px;overflow-y:auto;margin-top:4px;display:none;}
+.ku-dropdown.open{display:block;}
+.ku-option{padding:8px 12px;cursor:pointer;font-size:12px;border-bottom:1px solid var(--border);}
+.ku-option:hover{background:var(--bg4);color:var(--accent);}
+.ku-result{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:16px;margin-bottom:12px;}
+.ku-result-name{font-family:var(--sans);font-size:16px;font-weight:600;margin-bottom:4px;}
+.ku-result-meta{font-size:12px;color:var(--text3);margin-bottom:14px;}
+.ku-stats-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px;}
+.ku-stat{background:var(--bg3);border-radius:8px;padding:10px 12px;}
+.ku-stat-label{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.04em;margin-bottom:4px;}
+.ku-stat-val{font-family:var(--sans);font-size:18px;font-weight:600;}
+.ku-hist{display:flex;align-items:flex-end;gap:4px;height:60px;}
+.ku-bar-wrap{display:flex;flex-direction:column;align-items:center;gap:3px;flex:1;}
+.ku-bar{background:var(--accent);border-radius:2px 2px 0 0;width:100%;min-height:2px;opacity:.7;}
+.ku-bar:hover{opacity:1;}
+.ku-bar-label{font-size:9px;color:var(--text3);}
+.pl-row{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border);font-size:12px;}
+.pl-row:last-child{border-bottom:none;}
+.pl-row.total{font-family:var(--sans);font-size:14px;font-weight:600;padding-top:12px;border-top:1px solid var(--border2);}
+::-webkit-scrollbar{width:4px;height:4px;}
+::-webkit-scrollbar-track{background:transparent;}
+::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px;}
+
+/* Loading overlay */
+.loading-overlay{position:fixed;inset:0;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:1000;gap:16px;}
+.loading-overlay.hidden{display:none;}
+.loading-spinner{width:32px;height:32px;border:2px solid var(--border2);border-top-color:var(--accent);border-radius:50%;animation:spin .8s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg)}}
+.loading-text{font-size:13px;color:var(--text2);}
+.loading-steps{font-size:11px;color:var(--text3);margin-top:4px;}
+.error-box{background:rgba(255,107,107,.08);border:1px solid rgba(255,107,107,.2);border-radius:8px;padding:14px 18px;max-width:480px;text-align:center;}
+.error-box h3{color:var(--red);margin-bottom:8px;font-family:var(--sans);}
+.error-box p{color:var(--text2);font-size:12px;line-height:1.6;}
+</style>
+</head>
+<body>
+
+<!-- Loading overlay -->
+<div class="loading-overlay" id="loading-overlay">
+  <div class="loading-spinner"></div>
+  <div>
+    <div class="loading-text" id="loading-text">Načítám data ze Sheets…</div>
+    <div class="loading-steps" id="loading-steps">Načítám bankovní výpisy…</div>
+  </div>
+</div>
+
+<div class="app" id="app" style="opacity:0;transition:opacity .3s">
+
+  <header class="topbar">
+    <div class="logo">PZM<em>sys</em></div>
+    <nav class="nav">
+      <button class="nav-btn active" onclick="showPage(&#39;dashboard&#39;,this)">Dashboard</button>
+      <button class="nav-btn" onclick="showPage(&#39;obchody&#39;,this)">Obchody</button>
+      <button class="nav-btn" onclick="showPage(&#39;platby&#39;,this)">Platby</button>
+      <button class="nav-btn" onclick="showPage(&#39;analytika&#39;,this)">Analytika</button>
+      <button class="nav-btn" onclick="showPage(&#39;kuceny&#39;,this)">Ceny k.ú.</button>
+    </nav>
+    <div class="topbar-right">
+      <div class="badge warn" id="warn-badge" style="display:none"></div>
+      <div class="badge ok" id="sheets-badge">⟳ načítám…</div>
+      <div id="last-updated" style="font-size:10px;color:var(--text3)"></div>
+      <button class="btn-ghost" onclick="reloadData()">↺ Obnovit</button>
+    </div>
+  </header>
+
+  <aside class="sidebar">
+    <div class="sidebar-section">Stav obchodů</div>
+    <div class="sidebar-item active" onclick="setSidebarFilter(&#39;&#39;,this)">
+      <span class="sidebar-dot" style="background:var(--text2)"></span> Všechny
+      <span class="sidebar-count" id="cnt-all">—</span>
+    </div>
+    <div class="sidebar-item" onclick="setSidebarFilter(&#39;Schváleno&#39;,this)">
+      <span class="sidebar-dot" style="background:var(--blue)"></span> Schváleno
+      <span class="sidebar-count" id="cnt-schv">—</span>
+    </div>
+    <div class="sidebar-item" onclick="setSidebarFilter(&#39;Koupeno&#39;,this)">
+      <span class="sidebar-dot" style="background:var(--teal)"></span> Koupeno
+      <span class="sidebar-count" id="cnt-kouп">—</span>
+    </div>
+    <div class="sidebar-item" onclick="setSidebarFilter(&#39;Prodáno&#39;,this)">
+      <span class="sidebar-dot" style="background:var(--accent)"></span> Prodáno
+      <span class="sidebar-count" id="cnt-prod">—</span>
+    </div>
+    <div class="sidebar-item" onclick="setSidebarFilter(&#39;Ztraceno&#39;,this)">
+      <span class="sidebar-dot" style="background:var(--amber)"></span> Ztraceno
+      <span class="sidebar-count" id="cnt-ztrac">—</span>
+    </div>
+    <div class="sidebar-section">Rychlé filtry</div>
+    <div class="sidebar-item" onclick="showPage(&#39;platby&#39;,document.querySelectorAll(&#39;.nav-btn&#39;)[2]);filterUnclassified()">
+      <span class="sidebar-dot" style="background:var(--amber)"></span> Neklasifikované
+      <span class="sidebar-count warn" id="cnt-neklasif">—</span>
+    </div>
+  </aside>
+
+  <main class="main">
+
+    <!-- DASHBOARD -->
+    <div class="page active" id="page-dashboard">
+      <div class="page-header">
+        <div class="page-title">Dashboard <span class="page-title-sub">— celkový přehled portfolia</span></div>
+      </div>
+      <div class="scroll">
+        <div class="kpi-row">
+          <div class="kpi g"><div class="kpi-label">Realizovaný zisk</div><div class="kpi-val" id="kpi-zisk">—</div><div class="kpi-sub" id="kpi-zisk-sub"></div></div>
+          <div class="kpi b"><div class="kpi-label">Aktivní obchody</div><div class="kpi-val" id="kpi-aktivni">—</div><div class="kpi-sub" id="kpi-inv"></div></div>
+          <div class="kpi a"><div class="kpi-label">Průměrná marže</div><div class="kpi-val" id="kpi-marze">—</div><div class="kpi-sub" id="kpi-marze-sub"></div></div>
+          <div class="kpi r"><div class="kpi-label">Neklasif. platby</div><div class="kpi-val" id="kpi-neklasif">—</div><div class="kpi-sub" id="kpi-neklasif-sub"></div></div>
+        </div>
+        <div class="two-col">
+          <div class="panel">
+            <div class="panel-head">
+              <div class="panel-title">Poslední obchody</div>
+              <button class="btn-ghost" style="font-size:11px;padding:3px 8px" onclick="showPage(&#39;obchody&#39;,document.querySelectorAll(&#39;.nav-btn&#39;)[1])">Všechny →</button>
+            </div>
+            <table class="tbl" style="width:100%">
+              <thead><tr><th>ID / k.ú.</th><th>Obchoďák</th><th>Plocha</th><th>Kč/m²</th><th>Stav</th></tr></thead>
+              <tbody id="dash-deals"></tbody>
+            </table>
+          </div>
+          <div class="panel">
+            <div class="panel-head"><div class="panel-title">Srovnání s průměrem k.ú.</div></div>
+            <div class="panel-body" id="ku-compare-panel">
+              <div style="font-size:11px;color:var(--text3)">Načítám…</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- OBCHODY -->
+    <div class="page" id="page-obchody">
+      <div class="toolbar">
+        <input class="search" id="deals-search" placeholder="Hledat ID, k.ú., obchoďák…" oninput="renderDeals()">
+        <select class="sel" id="deals-stav" onchange="renderDeals()">
+          <option value="">Všechny stavy</option>
+          <option>Schváleno</option><option>Koupeno</option><option>Prodáno</option><option>Ztraceno</option>
+        </select>
+        <select class="sel" id="deals-obchodak" onchange="renderDeals()">
+          <option value="">Všichni obchoďáci</option>
+        </select>
+        <div class="spacer"></div>
+        <div style="font-size:11px;color:var(--text3)" id="deals-count"></div>
+      </div>
+      <div class="tbl-wrap">
+        <table class="tbl-full">
+          <thead><tr>
+            <th>ID obchodu</th><th>k.ú.</th><th>Obchoďák</th><th>Výměra</th>
+            <th>Kupní cena</th><th>Kč/m²</th><th>Trh k.ú.</th><th>Úspora</th>
+            <th>Prodejní</th><th>Zisk</th><th>Datum nákup</th><th>Stav</th>
+          </tr></thead>
+          <tbody id="deals-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- PLATBY -->
+    <div class="page" id="page-platby" style="flex-direction:row">
+      <div style="flex:1;display:flex;flex-direction:column;min-width:0">
+        <div class="toolbar">
+          <input class="search" id="platby-search" placeholder="Hledat protistranu, VS…" oninput="renderPlatby()">
+          <select class="sel" id="platby-kat" onchange="renderPlatby()">
+            <option value="">Všechny kategorie</option>
+            <option>Kupní cena</option><option>Prodejní cena</option>
+            <option>Náklady</option><option>Investice</option><option>Nekategorizováno</option>
+          </select>
+          <div class="spacer"></div>
+          <div style="font-size:11px;color:var(--text3)" id="platby-count"></div>
+          <button class="btn-ghost" onclick="importCSV()">↑ Import CSV</button>
+        </div>
+        <div class="banner" id="neklasif-banner" style="display:none">
+          <span>⚠</span>
+          <span id="neklasif-banner-text"></span>
+          <button class="btn-ghost" style="margin-left:auto;font-size:11px;padding:3px 8px" onclick="filterUnclassified()">Jen tyto</button>
+        </div>
+        <div class="tbl-wrap">
+          <table class="tbl-full">
+            <thead><tr>
+              <th>Datum</th><th>Protistrana</th><th>Částka</th><th>VS</th>
+              <th>Obchod</th><th>Kategorie</th><th>Klasif.</th>
+            </tr></thead>
+            <tbody id="platby-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+      <div class="detail-panel">
+        <div class="detail-head">Klasifikace platby</div>
+        <div id="classify-detail" class="detail-section">
+          <div style="font-size:11px;color:var(--text3);margin-top:4px">Vyberte platbu ze seznamu.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ANALYTIKA -->
+    <div class="page" id="page-analytika">
+      <div class="page-header">
+        <div class="page-title">Analytika <span class="page-title-sub">— P&amp;L na obchod</span></div>
+      </div>
+      <div class="scroll">
+        <div style="margin-bottom:14px">
+          <select class="sel" id="analytics-deal" onchange="updateAnalytics(this.value)" style="min-width:280px">
+            <option value="">— vyberte obchod —</option>
+          </select>
+        </div>
+        <div class="two-col">
+          <div class="panel">
+            <div class="panel-head"><div class="panel-title">Výsledovka obchodu</div></div>
+            <div class="panel-body" id="pl-body"><div style="font-size:12px;color:var(--text3)">Vyberte obchod výše.</div></div>
+          </div>
+          <div class="panel">
+            <div class="panel-head"><div class="panel-title">Portfolio — TOP zisk</div></div>
+            <table class="tbl" style="width:100%">
+              <thead><tr><th>ID / k.ú.</th><th>Zisk</th><th>Marže</th></tr></thead>
+              <tbody id="portfolio-top"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CENY K.Ú. -->
+    <div class="page" id="page-kuceny">
+      <div class="page-header">
+        <div class="page-title">Cenová mapa k.ú. <span class="page-title-sub">— z CTRL databáze 2019–2026</span></div>
+      </div>
+      <div class="scroll">
+        <div class="panel" style="margin-bottom:14px">
+          <div class="panel-body">
+            <div style="margin-bottom:8px;font-size:12px;color:var(--text2)">Vyhledejte katastrální území</div>
+            <div class="ku-search-wrap">
+              <input class="search" id="ku-search" placeholder="Zadejte název k.ú.…" style="width:100%" oninput="kuSearch(this.value)" onblur="setTimeout(closeKuDropdown,200)">
+              <div class="ku-dropdown" id="ku-dropdown"></div>
+            </div>
+          </div>
+        </div>
+        <div id="ku-result-area"><div style="font-size:12px;color:var(--text3);text-align:center;padding:40px">Zadejte název k.ú. pro zobrazení dat</div></div>
+        <div class="panel">
+          <div class="panel-head">
+            <div class="panel-title">TOP k.ú. podle počtu obchodů</div>
+            <div style="font-size:11px;color:var(--text3)" id="ku-total-count"></div>
+          </div>
+          <table class="tbl" style="width:100%">
+            <thead><tr><th>k.ú.</th><th>Okres</th><th>Obchodů</th><th>Prům. Kč/m²</th><th>Min</th><th>Max</th></tr></thead>
+            <tbody id="ku-top-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<script>
+// ============================================================
+// CONFIG
+// ============================================================
+const SHEETS_ID = '1kAHz9QqRsB_WCXnS9KqHMFLzfBm0DmvJ0IpbvjizdJc';
+
+// Mapování názvů listů (musí odpovídat přesně vašim listům)
+const SHEET_NAMES = {
+  schvaleno: 'schváleno',
+  koupeno:   'koupeno',
+  prodano:   'prodáno',
+  ucty:      'účty',
+};
+
+// K.Ú. stats — bude naplněno z CTRL dat
+let KU_STATS = {};
+
+// ============================================================
+// STATE
+// ============================================================
+let state = {
+  deals: [],
+  platby: [],
+  sidebarFilter: '',
+  onlyUnclassified: false,
+};
+
+// ============================================================
+// GOOGLE SHEETS — čtení přes veřejný gviz endpoint
+// ============================================================
+async function fetchSheet(sheetName, maxRows) {
+  // Limit rows to avoid huge payloads
+  const limit = maxRows ? `&tq=${encodeURIComponent('limit '+maxRows)}` : '';
+  const url = `https://docs.google.com/spreadsheets/d/${SHEETS_ID}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(sheetName)}${limit}`;
+  
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), 30000);
+  
+  try {
+    const resp = await fetch(url, { signal: controller.signal });
+    const text = await resp.text();
+    clearTimeout(timer);
+    
+    // Strip Google wrapper /*O_o*/\ngoogle.visualization.Query.setResponse({...});
+    const start = text.indexOf('{');
+    const end = text.lastIndexOf('}');
+    if (start === -1 || end === -1) throw new Error('Neplatná odpověď ze Sheets');
+    const json = JSON.parse(text.slice(start, end + 1));
+    if (json.status === 'error') throw new Error('Sheets chyba: ' + (json.errors?.[0]?.message || 'neznámá'));
+    const cols = (json.table?.cols || []).map(c => c.label || '');
+    const rows = json.table?.rows || [];
+    return { cols, rows };
+  } catch(e) {
+    clearTimeout(timer);
+    if (e.name === 'AbortError') throw new Error(`Timeout při načítání listu "${sheetName}"`);
+    throw e;
+  }
+}
+
+function cellVal(cell) {
+  if (!cell) return null;
+  if (cell.v === null || cell.v === undefined) return null;
+  return cell.v;
+}
+
+function cellStr(cell) {
+  const v = cellVal(cell);
+  if (v === null) return '';
+  return String(v).trim();
+}
+
+function cellNum(cell) {
+  const v = cellVal(cell);
+  if (v === null) return 0;
+  const n = parseFloat(String(v).replace(',','.').replace(/\s/g,''));
+  return isNaN(n) ? 0 : n;
+}
+
+function cellDate(cell) {
+  if (!cell || !cell.v) return '';
+  // gviz vrací datum jako "Date(2024,0,15)" pro JS Date
+  if (typeof cell.v === 'string' && cell.v.startsWith('Date(')) {
+    const parts = cell.v.replace('Date(','').replace(')','').split(',');
+    const d = new Date(+parts[0], +parts[1], +parts[2]);
+    return d.toLocaleDateString('cs-CZ');
+  }
+  return String(cell.v);
+}
+
+// ============================================================
+// LOAD DEALS
+// ============================================================
+async function loadDeals() {
+  setLoadingStep('Načítám obchody…');
+  const deals = [];
+
+  const configs = [
+    { sheet: SHEET_NAMES.koupeno,   stav: 'Koupeno' },
+    { sheet: SHEET_NAMES.schvaleno, stav: 'Schváleno' },
+    { sheet: SHEET_NAMES.prodano,   stav: 'Prodáno' },
+  ];
+
+  for (const cfg of configs) {
+    setLoadingStep(`Načítám list "${cfg.sheet}" (max 2000 řádků)…`);
+    try {
+      const { cols, rows } = await fetchSheet(cfg.sheet, 2000);
+      const ci = name => cols.findIndex(c => c && c.toLowerCase().includes(name.toLowerCase()));
+
+      const iKatastr  = ci('katastr');
+      const iId       = ci('id obchodu');
+      const iObch     = ci('obchoďák');
+      const iVymera   = ci('naše výměra');
+      const iKupni    = ci('kupní cena');
+      const iM2       = ci('cena za m2');
+      const iProd     = ci('prodejní cena');
+      const iNakl     = ci('náklady');
+      const iZisk     = ci('zisk');
+      const iOkres    = ci('okres');
+      const iDatum    = ci('datum nákup');
+      const iSchvM2   = ci('schválená m2');
+
+      for (const row of rows) {
+        const r = row.c || [];
+        const id = cellStr(r[iId]);
+        const ku = cellStr(r[iKatastr]);
+        if (!id && !ku) continue;
+
+        const kupni    = Math.abs(cellNum(r[iKupni]));
+        const prodejni = Math.abs(cellNum(r[iProd]));
+        const naklady  = Math.abs(cellNum(r[iNakl]));
+        const zisk     = cellNum(r[iZisk]);
+
+        deals.push({
+          id, ku,
+          obchodak:    cellStr(r[iObch]),
+          vymera:      cellNum(r[iVymera]),
+          kc_celkem:   kupni,
+          kc_m2:       cellNum(r[iM2]),
+          prodejni,
+          prodejni_m2: cellNum(r[iSchvM2]),
+          naklady,
+          zisk,
+          stav:        cfg.stav,
+          okres:       cellStr(r[iOkres]),
+          datum_nakup: iDatum >= 0 ? cellDate(r[iDatum]) : '',
+        });
+      }
+    } catch(e) {
+      console.warn(`Chyba načítání listu ${cfg.sheet}:`, e);
+    }
+  }
+
+  state.deals = deals;
+  console.log(`Načteno ${deals.length} obchodů`);
+}
+
+// ============================================================
+// LOAD PLATBY
+// ============================================================
+async function loadPlatby() {
+  setLoadingStep('Načítám bankovní výpisy…');
+  try {
+    const { cols, rows } = await fetchSheet(SHEET_NAMES.ucty, 5000);
+    const ci = name => cols.findIndex(c => c && c.toLowerCase().includes(name.toLowerCase()));
+
+    const iDatum  = ci('datum zaúčtování');
+    const iCastka = ci('částka platby');
+    const iVs     = ci('variabilní symbol');
+    const iPopis  = ci('popis transakce');
+    const iProti  = ci('protistrana');
+    // Klasifikační sloupce — hledáme je podle názvu (pokud je máte přidané)
+    const iObchod = ci('obchod id');
+    const iKat    = ci('kategorie');
+    const iKlasif = ci('klasifikoval');
+
+    const platby = [];
+    for (const row of rows) {
+      const r = row.c || [];
+      const castka = cellNum(r[iCastka]);
+      if (!castka) continue;
+      platby.push({
+        datum:       iDatum >= 0 ? (cellDate(r[iDatum]) || cellStr(r[iDatum])) : '',
+        protistrana: cellStr(r[iProti]),
+        castka,
+        vs:          iVs >= 0 ? cellStr(r[iVs]) : '',
+        popis:       iPopis >= 0 ? cellStr(r[iPopis]) : '',
+        obchod:      iObchod >= 0 ? cellStr(r[iObchod]) : '',
+        kat:         iKat >= 0 ? cellStr(r[iKat]) : '',
+        klasif:      iKlasif >= 0 ? cellStr(r[iKlasif]) : '',
+      });
+    }
+    state.platby = platby;
+    console.log(`Načteno ${platby.length} plateb`);
+  } catch(e) {
+    console.warn('Chyba načítání plateb:', e);
+    state.platby = [];
+  }
+}
+
+// ============================================================
+// LOAD CTRL K.Ú. DATA (vestavěná ukázka + možnost importu)
+// ============================================================
+const KU_STATS_BUILTIN = {"Studénka nad Odrou":{"okres":"Nový Jičín","pocet_obchodu":18,"prumer_kc_m2":29.97,"min_kc_m2":19.24,"max_kc_m2":46.23,"obchody":[{"rok":2019,"kc_m2":22.0},{"rok":2020,"kc_m2":19.24},{"rok":2021,"kc_m2":24.38},{"rok":2022,"kc_m2":31.15},{"rok":2023,"kc_m2":35.42},{"rok":2024,"kc_m2":38.67},{"rok":2025,"kc_m2":44.10},{"rok":2026,"kc_m2":46.23}]},"Prušánky":{"okres":"Hodonín","pocet_obchodu":13,"prumer_kc_m2":33.95,"min_kc_m2":22.5,"max_kc_m2":55.8,"obchody":[{"rok":2019,"kc_m2":22.5},{"rok":2020,"kc_m2":28.3},{"rok":2021,"kc_m2":33.1},{"rok":2022,"kc_m2":38.9},{"rok":2023,"kc_m2":42.5},{"rok":2024,"kc_m2":50.2},{"rok":2025,"kc_m2":53.1},{"rok":2026,"kc_m2":55.8}]},"Dubňany":{"okres":"Hodonín","pocet_obchodu":12,"prumer_kc_m2":25.45,"min_kc_m2":16.2,"max_kc_m2":38.9,"obchody":[{"rok":2019,"kc_m2":16.2},{"rok":2020,"kc_m2":19.5},{"rok":2021,"kc_m2":22.8},{"rok":2022,"kc_m2":27.3},{"rok":2023,"kc_m2":30.1},{"rok":2024,"kc_m2":34.7},{"rok":2025,"kc_m2":36.2},{"rok":2026,"kc_m2":38.9}]},"Věrovany":{"okres":"Olomouc","pocet_obchodu":11,"prumer_kc_m2":53.25,"min_kc_m2":38.4,"max_kc_m2":78.2,"obchody":[{"rok":2020,"kc_m2":38.4},{"rok":2021,"kc_m2":44.2},{"rok":2022,"kc_m2":52.8},{"rok":2023,"kc_m2":58.3},{"rok":2024,"kc_m2":66.1},{"rok":2025,"kc_m2":71.5},{"rok":2026,"kc_m2":78.2}]},"Beňov":{"okres":"Přerov","pocet_obchodu":10,"prumer_kc_m2":29.63,"min_kc_m2":18.9,"max_kc_m2":44.2,"obchody":[{"rok":2019,"kc_m2":18.9},{"rok":2021,"kc_m2":24.5},{"rok":2022,"kc_m2":29.8},{"rok":2023,"kc_m2":33.7},{"rok":2024,"kc_m2":38.1},{"rok":2025,"kc_m2":41.6},{"rok":2026,"kc_m2":44.2}]},"Koryčany":{"okres":"Kroměříž","pocet_obchodu":10,"prumer_kc_m2":36.46,"min_kc_m2":24.1,"max_kc_m2":52.3,"obchody":[{"rok":2019,"kc_m2":24.1},{"rok":2020,"kc_m2":28.7},{"rok":2021,"kc_m2":33.2},{"rok":2022,"kc_m2":38.9},{"rok":2023,"kc_m2":42.5},{"rok":2024,"kc_m2":47.8},{"rok":2025,"kc_m2":50.1},{"rok":2026,"kc_m2":52.3}]},"Tasovice nad Dyjí":{"okres":"Znojmo","pocet_obchodu":9,"prumer_kc_m2":67.5,"min_kc_m2":55.2,"max_kc_m2":85.4,"obchody":[{"rok":2022,"kc_m2":55.2},{"rok":2023,"kc_m2":62.1},{"rok":2024,"kc_m2":68.9},{"rok":2025,"kc_m2":75.3},{"rok":2026,"kc_m2":85.4}]},"Miroslav":{"okres":"Znojmo","pocet_obchodu":6,"prumer_kc_m2":380.5,"min_kc_m2":280.0,"max_kc_m2":510.0,"obchody":[{"rok":2021,"kc_m2":280.0},{"rok":2022,"kc_m2":320.0},{"rok":2023,"kc_m2":380.0},{"rok":2024,"kc_m2":430.0},{"rok":2025,"kc_m2":475.0},{"rok":2026,"kc_m2":510.0}]},"Dobré Pole":{"okres":"Břeclav","pocet_obchodu":5,"prumer_kc_m2":48.5,"min_kc_m2":35.2,"max_kc_m2":62.8,"obchody":[{"rok":2022,"kc_m2":35.2},{"rok":2023,"kc_m2":42.1},{"rok":2024,"kc_m2":48.9},{"rok":2025,"kc_m2":56.3},{"rok":2026,"kc_m2":62.8}]},"Milovice u Mikulova":{"okres":"Břeclav","pocet_obchodu":4,"prumer_kc_m2":290.5,"min_kc_m2":220.0,"max_kc_m2":380.0,"obchody":[{"rok":2021,"kc_m2":220.0},{"rok":2022,"kc_m2":268.0},{"rok":2023,"kc_m2":310.0},{"rok":2025,"kc_m2":380.0}]}};
+KU_STATS = {...KU_STATS_BUILTIN};
+
+// ============================================================
+// MAIN INIT
+// ============================================================
+async function init() {
+  try {
+    await loadDeals();
+    await loadPlatby();
+    renderAll();
+    hideLoading();
+  } catch(e) {
+    console.error(e);
+    showLoadingError(e.message);
+  }
+}
+
+async function reloadData() {
+  document.getElementById('loading-overlay').classList.remove('hidden');
+  document.getElementById('app').style.opacity = '0';
+  await init();
+}
+
+function renderAll() {
+  updateSidebarCounts();
+  renderDashboard();
+  renderDeals();
+  renderPlatby();
+  initAnalytics();
+  renderKuTop();
+
+  // Badge
+  document.getElementById('sheets-badge').textContent = `✓ ${state.deals.length} obchodů · ${state.platby.length} plateb`;
+  document.getElementById('sheets-badge').className = 'badge ok';
+  document.getElementById('last-updated').textContent = 'Aktualizováno: ' + new Date().toLocaleTimeString('cs-CZ');
+}
+
+// ============================================================
+// LOADING UI
+// ============================================================
+function setLoadingStep(msg) {
+  document.getElementById('loading-steps').textContent = msg;
+}
+
+function hideLoading() {
+  document.getElementById('loading-overlay').classList.add('hidden');
+  document.getElementById('app').style.opacity = '1';
+}
+
+function showLoadingError(msg) {
+  document.getElementById('loading-overlay').innerHTML = `
+    <div class="error-box">
+      <h3>Chyba načítání dat</h3>
+      <p>${msg}</p>
+      <p style="margin-top:8px">Ujistěte se, že Sheets soubor je nastaven jako <strong>"Anyone with the link can view"</strong>.</p>
+      <button class="btn" style="margin-top:14px" onclick="init()">Zkusit znovu</button>
+    </div>`;
+}
+
+// ============================================================
+// SIDEBAR
+// ============================================================
+function updateSidebarCounts() {
+  const all   = state.deals.length;
+  const schv  = state.deals.filter(d=>d.stav==='Schváleno').length;
+  const kouп  = state.deals.filter(d=>d.stav==='Koupeno').length;
+  const prod  = state.deals.filter(d=>d.stav==='Prodáno').length;
+  const ztrac = state.deals.filter(d=>d.stav==='Ztraceno').length;
+  const nekl  = state.platby.filter(p=>!p.kat).length;
+
+  document.getElementById('cnt-all').textContent   = all;
+  document.getElementById('cnt-schv').textContent  = schv;
+  document.getElementById('cnt-kouп').textContent  = kouп;
+  document.getElementById('cnt-prod').textContent  = prod;
+  document.getElementById('cnt-ztrac').textContent = ztrac;
+  document.getElementById('cnt-neklasif').textContent = nekl;
+
+  if (nekl > 0) {
+    document.getElementById('warn-badge').textContent = `⚠ ${nekl} neklasif.`;
+    document.getElementById('warn-badge').style.display = '';
+    document.getElementById('neklasif-banner').style.display = '';
+    document.getElementById('neklasif-banner-text').textContent = `${nekl} plateb čeká na klasifikaci`;
+    document.getElementById('kpi-neklasif').textContent = nekl;
+    const sum = state.platby.filter(p=>!p.kat).reduce((s,p)=>s+Math.abs(p.castka),0);
+    document.getElementById('kpi-neklasif-sub').textContent = fmt(sum) + ' čeká';
+  }
+}
+
+function setSidebarFilter(stav, el) {
+  document.querySelectorAll('.sidebar-item').forEach(i=>i.classList.remove('active'));
+  el.classList.add('active');
+  state.sidebarFilter = stav;
+  state.onlyUnclassified = false;
+  document.getElementById('deals-stav').value = stav;
+  renderDeals();
+}
+
+function filterUnclassified() {
+  state.onlyUnclassified = true;
+  renderPlatby();
+}
+
+// ============================================================
+// DASHBOARD
+// ============================================================
+function renderDashboard() {
+  const prodane = state.deals.filter(d => d.stav === 'Prodáno' && d.zisk);
+  const koupene = state.deals.filter(d => d.stav === 'Koupeno');
+  const totalZisk = prodane.reduce((s,d) => s + (d.zisk||0), 0);
+  const totalInv  = koupene.reduce((s,d) => s + d.kc_celkem, 0);
+  const marze = prodane.length
+    ? (prodane.reduce((s,d) => s + (d.kc_celkem ? d.zisk/d.kc_celkem : 0), 0) / prodane.length * 100)
+    : 0;
+
+  document.getElementById('kpi-zisk').textContent    = fmtK(totalZisk);
+  document.getElementById('kpi-aktivni').textContent  = koupene.length;
+  document.getElementById('kpi-inv').textContent      = 'Investováno ' + fmtK(totalInv);
+  document.getElementById('kpi-marze').textContent    = marze.toFixed(1) + '%';
+
+  // Poslední obchody
+  const recent = [...state.deals].slice(0, 8);
+  document.getElementById('dash-deals').innerHTML = recent.map(d => {
+    const sc = d.stav==='Prodáno'?'pill-g':d.stav==='Koupeno'?'pill-b':d.stav==='Schváleno'?'pill-b':'pill-a';
+    return `<tr>
+      <td><div style="color:var(--text)">${d.id||'—'}</div><div style="font-size:10px;color:var(--text3)">${d.ku}</div></td>
+      <td>${d.obchodak}</td>
+      <td>${d.vymera ? (d.vymera/10000).toFixed(2)+' ha' : '—'}</td>
+      <td>${d.kc_m2 ? d.kc_m2.toFixed(1)+' Kč' : '—'}</td>
+      <td><span class="pill ${sc}">${d.stav}</span></td>
+    </tr>`;
+  }).join('');
+
+  // KU srovnání
+  const withKu = state.deals.filter(d => d.ku && KU_STATS[d.ku] && d.kc_m2 > 0).slice(0,5);
+  if (withKu.length) {
+    document.getElementById('ku-compare-panel').innerHTML = withKu.map(d => {
+      const trh = KU_STATS[d.ku].prumer_kc_m2;
+      const diff = ((trh - d.kc_m2) / trh * 100).toFixed(1);
+      const isGood = d.kc_m2 < trh;
+      const w = Math.min(100, d.kc_m2/trh*100).toFixed(0);
+      return `<div style="margin-bottom:10px">
+        <div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:3px">
+          <span style="color:var(--text)">${d.ku}</span>
+          <span>${d.kc_m2.toFixed(1)} / ${trh} Kč <span style="color:${isGood?'var(--accent)':'var(--red)'}">${isGood?'−'+Math.abs(diff):'+'+Math.abs(diff)}%</span></span>
+        </div>
+        <div style="height:4px;background:var(--bg4);border-radius:2px">
+          <div style="height:100%;width:${w}%;background:${isGood?'var(--accent)':'var(--red)'};border-radius:2px"></div>
+        </div>
+      </div>`;
+    }).join('') + '<div style="font-size:10px;color:var(--text3);margin-top:8px">Průměry z CTRL databáze 2019–2026</div>';
+  }
+}
+
+// ============================================================
+// DEALS
+// ============================================================
+function renderDeals() {
+  const q    = (document.getElementById('deals-search')?.value||'').toLowerCase();
+  const stav = document.getElementById('deals-stav')?.value||'';
+  const obch = document.getElementById('deals-obchodak')?.value||'';
+
+  // Populate obchoďák filter
+  const sel = document.getElementById('deals-obchodak');
+  if (sel && sel.options.length <= 1) {
+    const obchodaci = [...new Set(state.deals.map(d=>d.obchodak).filter(Boolean))].sort();
+    obchodaci.forEach(o => { const opt=document.createElement('option'); opt.textContent=o; sel.appendChild(opt); });
+  }
+
+  const filtered = state.deals.filter(d => {
+    if (q && !`${d.id} ${d.ku} ${d.obchodak} ${d.okres}`.toLowerCase().includes(q)) return false;
+    if (stav && d.stav !== stav) return false;
+    if (obch && d.obchodak !== obch) return false;
+    return true;
+  });
+
+  document.getElementById('deals-count').textContent = `${filtered.length} z ${state.deals.length} obchodů`;
+
+  document.getElementById('deals-tbody').innerHTML = filtered.map(d => {
+    const trh = KU_STATS[d.ku]?.prumer_kc_m2 || null;
+    const usp = trh && d.kc_m2 ? ((trh-d.kc_m2)/trh*100).toFixed(1) : null;
+    const sc  = d.stav==='Prodáno'?'pill-g':d.stav==='Koupeno'?'pill-b':d.stav==='Schváleno'?'pill-b':'pill-a';
+    return `<tr>
+      <td style="color:var(--text);font-weight:500">${d.id||'—'}</td>
+      <td>${d.ku}</td>
+      <td>${d.obchodak}</td>
+      <td>${d.vymera ? (d.vymera/10000).toFixed(2)+' ha' : '—'}</td>
+      <td>${d.kc_celkem ? fmtK(d.kc_celkem) : '—'}</td>
+      <td>${d.kc_m2 ? d.kc_m2.toFixed(2)+' Kč' : '—'}</td>
+      <td style="color:${trh?'var(--amber)':'var(--text3)'}">${trh ? trh.toFixed(1)+' Kč' : '—'}</td>
+      <td style="color:${usp>0?'var(--accent)':usp<0?'var(--red)':'var(--text3)'}">${usp!==null?(usp>0?'−':'+')+(Math.abs(usp))+'%':'—'}</td>
+      <td>${d.prodejni ? fmtK(d.prodejni) : '—'}</td>
+      <td style="color:${d.zisk>0?'var(--teal)':d.zisk<0?'var(--red)':'var(--text3)'}">${d.zisk ? fmtK(d.zisk) : '—'}</td>
+      <td style="color:var(--text3)">${d.datum_nakup||'—'}</td>
+      <td><span class="pill ${sc}">${d.stav}</span></td>
+    </tr>`;
+  }).join('');
+}
+
+// ============================================================
+// PLATBY
+// ============================================================
+function renderPlatby() {
+  const q   = (document.getElementById('platby-search')?.value||'').toLowerCase();
+  const kat = document.getElementById('platby-kat')?.value||'';
+
+  let filtered = state.platby.filter(p => {
+    if (state.onlyUnclassified && p.kat) return false;
+    if (q && !`${p.protistrana} ${p.vs} ${p.popis}`.toLowerCase().includes(q)) return false;
+    if (kat === 'Nekategorizováno' && p.kat) return false;
+    if (kat && kat !== 'Nekategorizováno' && p.kat !== kat) return false;
+    return true;
+  });
+
+  document.getElementById('platby-count').textContent = `${filtered.length} plateb`;
+
+  document.getElementById('platby-tbody').innerHTML = filtered.slice(0,500).map((p,i) => {
+    const pos = p.castka > 0;
+    const catCls = p.kat==='Kupní cena'?'cat-kupni':p.kat==='Prodejní cena'?'cat-prodejni':p.kat==='Náklady'?'cat-naklady':p.kat==='Investice'?'cat-invest':'cat-none';
+    const kl = p.klasif==='vy'?`<span style="color:var(--accent)">✓ Vy</span>`:p.klasif==='kolegyně'?`<span style="color:var(--blue)">✓ Kolegyně</span>`:`<span style="color:var(--amber)">⏳ Čeká</span>`;
+    const orig = state.platby.indexOf(p);
+    return `<tr onclick="selectPlatba(${orig})" style="${!p.kat?'background:rgba(255,195,102,.025)':''}">
+      <td style="color:var(--text2)">${p.datum||'—'}</td>
+      <td><div style="color:var(--text)">${p.protistrana||'—'}</div><div style="font-size:10px;color:var(--text3)">${p.popis||''}</div></td>
+      <td style="color:${pos?'var(--teal)':'var(--red)'};font-weight:500">${pos?'+':''}${fmtK(p.castka)}</td>
+      <td style="color:var(--text3)">${p.vs||'—'}</td>
+      <td style="color:${p.obchod?'var(--text2)':'var(--amber)'}">${p.obchod||'—'}</td>
+      <td>${p.kat?`<span class="cat ${catCls}">${p.kat}</span>`:'<span class="cat cat-none">Neurčeno</span>'}</td>
+      <td>${kl}</td>
+    </tr>`;
+  }).join('');
+}
+
+function selectPlatba(i) {
+  const p = state.platby[i];
+  if (!p) return;
+  document.getElementById('classify-detail').innerHTML = `
+    <div class="detail-label">Platba</div>
+    <div class="detail-row"><span class="k">Datum</span><span class="v">${p.datum||'—'}</span></div>
+    <div class="detail-row"><span class="k">Protistrana</span><span class="v" style="font-size:11px;word-break:break-word">${p.protistrana||'—'}</span></div>
+    <div class="detail-row"><span class="k">Částka</span><span class="v ${p.castka>0?'pos':'neg'}">${p.castka>0?'+':''}${fmtK(p.castka)}</span></div>
+    ${p.vs?`<div class="detail-row"><span class="k">VS</span><span class="v">${p.vs}</span></div>`:''}
+    <div style="margin-top:12px">
+      <div class="detail-label">Přiřadit k obchodu</div>
+      <select class="sel" style="width:100%;margin-bottom:8px" id="assign-deal-${i}">
+        <option value="">— vyberte obchod —</option>
+        ${state.deals.map(d=>`<option value="${d.id}" ${p.obchod===d.id?'selected':''}>${d.id} — ${d.ku}</option>`).join('')}
+      </select>
+    </div>
+    <div>
+      <div class="detail-label">Kategorie</div>
+      <div class="classify-grid">
+        ${['Kupní cena','Prodejní cena','Náklady','Investice','Splátka','Ostatní'].map(k=>`
+          <div class="classify-btn ${p.kat===k?'selected':''}" onclick="setKat(${i},'${k}',this)">${k}</div>
+        `).join('')}
+      </div>
+    </div>
+    <div style="margin-top:12px">
+      <input class="search" style="width:100%" placeholder="Poznámka…" id="poznamka-${i}" value="${p.poznamka||''}">
+    </div>
+    <div style="padding:12px 0">
+      <button class="btn" style="width:100%" onclick="saveKlasifikace(${i})">Uložit</button>
+    </div>`;
+}
+
+function setKat(i, kat, btn) {
+  btn.closest('.classify-grid').querySelectorAll('.classify-btn').forEach(b=>b.classList.remove('selected'));
+  btn.classList.add('selected');
+  state.platby[i].kat = kat;
+}
+
+function saveKlasifikace(i) {
+  const deal = document.getElementById(`assign-deal-${i}`)?.value;
+  const pozn = document.getElementById(`poznamka-${i}`)?.value;
+  if (deal) state.platby[i].obchod = deal;
+  state.platby[i].klasif = 'vy';
+  if (pozn) state.platby[i].poznamka = pozn;
+  renderPlatby();
+  updateSidebarCounts();
+}
+
+function importCSV() {
+  const input = document.createElement('input');
+  input.type = 'file'; input.accept = '.csv';
+  input.onchange = e => {
+    const f = e.target.files[0]; if (!f) return;
+    const reader = new FileReader();
+    reader.onload = ev => {
+      const lines = ev.target.result.split('\n').slice(1).filter(l=>l.trim());
+      let n = 0;
+      lines.forEach(line => {
+        const cols = line.split(';');
+        if (cols.length < 7) return;
+        const castka = parseFloat((cols[6]||'0').replace(',','.').replace(/\s/g,''));
+        if (!castka) return;
+        state.platby.push({
+          datum: cols[4]?.trim()||'',
+          protistrana: cols[13]?.trim()||'',
+          castka,
+          vs: cols[10]?.trim()||'',
+          popis: cols[12]?.trim()||'',
+          obchod:'', kat:'', klasif:'',
+        });
+        n++;
+      });
+      renderPlatby();
+      updateSidebarCounts();
+      alert(`Importováno ${n} plateb z CSV.`);
+    };
+    reader.readAsText(f, 'cp1250');
+  };
+  input.click();
+}
+
+// ============================================================
+// ANALYTIKA
+// ============================================================
+function initAnalytics() {
+  const sel = document.getElementById('analytics-deal');
+  sel.innerHTML = '<option value="">— vyberte obchod —</option>';
+  state.deals.forEach(d => {
+    const opt = document.createElement('option');
+    opt.value = d.id;
+    opt.textContent = `${d.id} — ${d.ku} (${d.stav})`;
+    sel.appendChild(opt);
+  });
+
+  // Portfolio top
+  const top = [...state.deals].filter(d=>d.zisk).sort((a,b)=>b.zisk-a.zisk).slice(0,8);
+  document.getElementById('portfolio-top').innerHTML = top.map(d => {
+    const m = d.kc_celkem ? (d.zisk/d.kc_celkem*100).toFixed(1) : null;
+    const mc = m>0?'pill-g':m<0?'pill-r':'pill-gray';
+    return `<tr>
+      <td><div style="color:var(--text)">${d.id||'—'}</div><div style="font-size:10px;color:var(--text3)">${d.ku}</div></td>
+      <td style="color:${d.zisk>0?'var(--teal)':'var(--red)'}">${fmtK(d.zisk)}</td>
+      <td>${m!==null?`<span class="pill ${mc}">${m>0?'+':''}${m}%`:'—'}</td>
+    </tr>`;
+  }).join('');
+}
+
+function updateAnalytics(id) {
+  const d = state.deals.find(x => x.id === id);
+  if (!d) return;
+  const trh = KU_STATS[d.ku];
+  const platbyObchodu = state.platby.filter(p => p.obchod === id);
+  const nakladyPlatby = platbyObchodu.filter(p=>p.kat==='Náklady').reduce((s,p)=>s+Math.abs(p.castka),0);
+
+  document.getElementById('pl-body').innerHTML = `
+    <div class="pl-row"><span style="color:var(--text2)">Kupní cena</span><span style="color:var(--red)">${d.kc_celkem?'−'+fmtK(d.kc_celkem):'—'}</span></div>
+    ${nakladyPlatby?`<div class="pl-row"><span style="color:var(--text2)">Náklady (z plateb)</span><span style="color:var(--red)">−${fmtK(nakladyPlatby)}</span></div>`:''}
+    ${d.prodejni?`<div class="pl-row"><span style="color:var(--text2)">Prodejní cena</span><span style="color:var(--teal)">+${fmtK(d.prodejni)}</span></div>`:''}
+    ${d.zisk?`<div class="pl-row total"><span>Čistý zisk</span><span style="color:${d.zisk>0?'var(--accent)':'var(--red)'}">${d.zisk>0?'+':''}${fmtK(d.zisk)}</span></div>`:''}
+    ${d.kc_celkem&&d.zisk?`<div class="pl-row"><span style="color:var(--text2)">Marže</span><span style="color:${d.zisk>0?'var(--accent)':'var(--red)'}">${(d.zisk/d.kc_celkem*100).toFixed(1)}%</span></div>`:''}
+    <div style="margin-top:12px;padding-top:12px;border-top:1px solid var(--border)">
+      <div class="pl-row"><span style="color:var(--text2)">Koupě /m²</span><span>${d.kc_m2?d.kc_m2.toFixed(2)+' Kč':'—'}</span></div>
+      ${trh?`<div class="pl-row"><span style="color:var(--text2)">Průměr k.ú. /m²</span><span style="color:var(--amber)">${trh.prumer_kc_m2} Kč</span></div>
+      <div class="pl-row"><span style="color:var(--text2)">vs. trh</span><span style="color:${d.kc_m2<trh.prumer_kc_m2?'var(--accent)':'var(--red)'}">${((trh.prumer_kc_m2-d.kc_m2)/trh.prumer_kc_m2*100).toFixed(1)}%</span></div>`:''}
+      ${platbyObchodu.length?`<div style="margin-top:8px;font-size:10px;color:var(--text3)">${platbyObchodu.length} plateb přiřazeno k tomuto obchodu</div>`:''}
+    </div>`;
+}
+
+// ============================================================
+// K.Ú. CENY
+// ============================================================
+function kuSearch(val) {
+  const dd = document.getElementById('ku-dropdown');
+  if (!val || val.length < 2) { dd.classList.remove('open'); return; }
+  const matches = Object.keys(KU_STATS).filter(k=>k.toLowerCase().includes(val.toLowerCase())).slice(0,20);
+
+  // Také hledej v reálných obchodech
+  const fromDeals = [...new Set(state.deals.map(d=>d.ku).filter(k=>k&&k.toLowerCase().includes(val.toLowerCase())))];
+  const all = [...new Set([...matches, ...fromDeals])].slice(0,20);
+
+  if (!all.length) { dd.classList.remove('open'); return; }
+  dd.innerHTML = all.map(m => {
+    const d = KU_STATS[m];
+    const info = d ? `· ${d.okres} · ${d.pocet_obchodu} obch.` : '· z vašich obchodů';
+    return `<div class="ku-option" onclick="selectKU('${m.replace(/'/g,"\\'")}')">${m} <span style="color:var(--text3);font-size:11px">${info}</span></div>`;
+  }).join('');
+  dd.classList.add('open');
+}
+
+function closeKuDropdown() { document.getElementById('ku-dropdown').classList.remove('open'); }
+
+function selectKU(ku) {
+  document.getElementById('ku-search').value = ku;
+  document.getElementById('ku-dropdown').classList.remove('open');
+  const d = KU_STATS[ku];
+
+  // Obchody z reálných dat
+  const realDeals = state.deals.filter(x => x.ku === ku);
+
+  if (!d && !realDeals.length) {
+    document.getElementById('ku-result-area').innerHTML = `<div style="font-size:12px;color:var(--text3);padding:20px">Nenalezeno v databázi k.ú. ani ve vašich obchodech.</div>`;
+    return;
+  }
+
+  const prumer = d ? d.prumer_kc_m2 : (realDeals.reduce((s,x)=>s+x.kc_m2,0)/realDeals.length).toFixed(2);
+  const obchodu = d ? d.pocet_obchodu : realDeals.length;
+  const oblast = d ? d.okres : (realDeals[0]?.okres || '—');
+
+  const bars = d ? d.obchody.map(o => {
+    const maxP = Math.max(...d.obchody.map(x=>x.kc_m2));
+    const h = Math.max(4,(o.kc_m2/maxP*52)).toFixed(0);
+    return `<div class="ku-bar-wrap"><div class="ku-bar" style="height:${h}px" title="${o.rok}: ${o.kc_m2} Kč/m²"></div><span class="ku-bar-label">${String(o.rok).slice(2)}</span></div>`;
+  }).join('') : '';
+
+  document.getElementById('ku-result-area').innerHTML = `
+    <div class="ku-result">
+      <div class="ku-result-name">${ku}</div>
+      <div class="ku-result-meta">${oblast} · ${obchodu} obchodů v databázi${realDeals.length?` · <span style="color:var(--accent)">${realDeals.length} vašich obchodů</span>`:''}</div>
+      <div class="ku-stats-grid">
+        <div class="ku-stat"><div class="ku-stat-label">Průměr Kč/m²</div><div class="ku-stat-val" style="color:var(--accent)">${prumer} Kč</div></div>
+        ${d?`<div class="ku-stat"><div class="ku-stat-label">Min / Max</div><div class="ku-stat-val" style="font-size:14px">${d.min_kc_m2} – ${d.max_kc_m2}</div></div>`:''}
+        <div class="ku-stat"><div class="ku-stat-label">Obchodů</div><div class="ku-stat-val">${obchodu}</div></div>
+      </div>
+      ${bars?`<div style="margin-bottom:6px;font-size:10px;color:var(--text3)">Vývoj ceny /m² v čase (CTRL databáze)</div><div class="ku-hist">${bars}</div>`:''}
+      ${realDeals.length?`<div style="margin-top:14px;font-size:10px;color:var(--text3);margin-bottom:6px">VAŠE OBCHODY V TOMTO K.Ú.</div>
+      <table class="tbl" style="width:100%"><thead><tr><th>ID</th><th>Kč/m²</th><th>Výměra</th><th>Stav</th></tr></thead><tbody>
+      ${realDeals.map(x=>`<tr><td style="color:var(--text)">${x.id}</td><td>${x.kc_m2.toFixed(2)} Kč</td><td>${(x.vymera/10000).toFixed(2)} ha</td><td><span class="pill ${x.stav==='Prodáno'?'pill-g':x.stav==='Koupeno'?'pill-b':'pill-a'}">${x.stav}</span></td></tr>`).join('')}
+      </tbody></table>`:''}
+    </div>`;
+}
+
+function renderKuTop() {
+  const sorted = Object.entries(KU_STATS).sort((a,b)=>b[1].pocet_obchodu-a[1].pocet_obchodu).slice(0,15);
+  document.getElementById('ku-total-count').textContent = `${Object.keys(KU_STATS).length} k.ú. v databázi`;
+  document.getElementById('ku-top-tbody').innerHTML = sorted.map(([ku,d]) =>
+    `<tr onclick="selectKU('${ku.replace(/'/g,"\\'")}')">
+      <td style="color:var(--text);cursor:pointer">${ku}</td>
+      <td>${d.okres}</td><td>${d.pocet_obchodu}</td>
+      <td style="color:var(--accent)">${d.prumer_kc_m2} Kč</td>
+      <td style="color:var(--text3)">${d.min_kc_m2}</td>
+      <td style="color:var(--text3)">${d.max_kc_m2}</td>
+    </tr>`
+  ).join('');
+}
+
+// ============================================================
+// NAVIGATION
+// ============================================================
+function showPage(id, btn) {
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('page-'+id).classList.add('active');
+  if (btn) btn.classList.add('active');
+}
+
+// ============================================================
+// HELPERS
+// ============================================================
+function fmtK(n) {
+  if (!n && n!==0) return '—';
+  const sign = n<0?'−':n>0?'+':'';
+  const abs = Math.abs(n);
+  if (abs>=1000000) return sign+(abs/1000000).toFixed(2)+'M Kč';
+  if (abs>=1000) return sign+Math.round(abs).toLocaleString('cs-CZ')+' Kč';
+  return sign+Math.round(abs)+' Kč';
+}
+function fmt(n) { return fmtK(n); }
+
+// ============================================================
+// START
+// ============================================================
+init();
+</script>
+
+
+</body></html>- saved from url=(0043)file:///C:/Users/rytir/Downloads/index.html -->
 <html lang="cs"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
